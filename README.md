@@ -1,2 +1,3 @@
-# companion-module-disguise
+# companion-module-generic-osc
+
 See HELP.md and LICENSE
