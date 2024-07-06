@@ -109,14 +109,6 @@ class disguiseOSCInstance extends InstanceBase {
 				default: 7400,
 				regex: Regex.PORT,
 			},
-			{
-				type: 'textinput',
-				id: 'recieve_port',
-				label: 'Receive Port',
-				width: 3,
-				default: 7400,
-				regex: Regex.PORT,
-			},
 		]
 	}
 

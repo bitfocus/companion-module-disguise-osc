@@ -1,12 +1,12 @@
 {
-	"id": "disguise",
-	"name": "disguise",
+	"id": "disguise-osc",
+	"name": "disguise-osc",
 	"shortname": "d3-osc",
-	"description": "OSC plugin for Companion",
-	"version": "3.0.0",
+	"description": "Direct: OSC plugin for Companion",
+	"version": "0.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/bitfocus/companion-module-disguise.git",
-	"bugs": "https://github.com/bitfocus/companion-module-disguise/issues",
+	"repository": "git+https://github.com/bitfocus/companion-module-disguise-osc.git",
+	"bugs": "https://github.com/bitfocus/companion-module-disguise-osc/issues",
 	"maintainers": [
 		{
 			"name": "Dan Hall",
@@ -18,7 +18,7 @@
 		"type": "node18",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
-		"entrypoint": "../main.js"
+		"entrypoint": "../src/main.js"
 	},
 	"manufacturer": "disguise",
 	"products": ["OSC"],

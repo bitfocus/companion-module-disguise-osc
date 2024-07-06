@@ -36,3 +36,5 @@ This module provides default OSC controls to the d3/disguise server. Setup OSC t
 * Brightness
 * BPM
 * Play mode
+
+**WIP**
