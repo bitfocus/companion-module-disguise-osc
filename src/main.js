@@ -1,7 +1,7 @@
 const { InstanceBase, Regex, runEntrypoint, combineRgb } = require('@companion-module/base')
-const osc = require('osc')
 const UpgradeScripts = require('./upgrades')
 
+const oscListener = require('./oscReceiver.js')
 const choices = require('./choices')
 
 let PLAYMODE
@@ -46,7 +46,7 @@ class disguiseOSCInstance extends InstanceBase {
 					id: 'mode',
 					label: 'Playmode :',
 					default: '00',
-					choices: choices.CHOICES_PLAYMODE,
+					choices: choices.PLAYMODE,
 				},
 			],
 			callback: (feedback) => {
@@ -62,7 +62,13 @@ class disguiseOSCInstance extends InstanceBase {
 	async init(config) {
 		this.config = config
 
-		this.init_osc()
+		// this.init_osc()
+
+		oscListener.connect(this)
+
+		// Start monitoring
+		// monitor.startMonitoring()
+
 		this.updateStatus('ok')
 		this.setVariableDefinitions(this.variable_array) // export variable definitions
 		this.updateActions() // export actions
@@ -91,6 +97,7 @@ class disguiseOSCInstance extends InstanceBase {
 				id: 'host',
 				label: 'Target IP',
 				width: 6,
+				default: '192.168.23.216',
 				regex: Regex.IP,
 			},
 			{
@@ -397,7 +404,7 @@ class disguiseOSCInstance extends InstanceBase {
 						type: 'textinput',
 						label: 'Layer name :',
 						id: 'layer_name',
-						default: 'vid',
+						default: 'video',
 						useVariables: true,
 					},
 					{
@@ -405,7 +412,7 @@ class disguiseOSCInstance extends InstanceBase {
 						id: 'mode',
 						label: 'Blendmode :',
 						default: '00',
-						choices: choices.CHOICES_BLENDMODE,
+						choices: choices.BLENDMODE,
 					},
 				],
 				callback: async (event) => {
@@ -438,7 +445,7 @@ class disguiseOSCInstance extends InstanceBase {
 						type: 'textinput',
 						label: 'Layer name :',
 						id: 'layer_name',
-						default: 'vid',
+						default: 'video',
 						useVariables: true,
 					},
 					{
@@ -467,8 +474,8 @@ class disguiseOSCInstance extends InstanceBase {
 					])
 				},
 			},
-			layer_tintr: {
-				name: 'Layer tint red',
+			layer_tint: {
+				name: 'Layer tint',
 				options: [
 					{
 						type: 'textinput',
@@ -481,16 +488,24 @@ class disguiseOSCInstance extends InstanceBase {
 						type: 'textinput',
 						label: 'Layer name :',
 						id: 'layer_name',
-						default: 'vid',
+						default: 'video',
 						useVariables: true,
 					},
 					{
+						type: 'dropdown',
+						id: 'channel',
+						label: 'Channel :',
+						default: 'r',
+						choices: choices.TINT,
+					},
+					{
 						type: 'number',
-						label: 'Tint red (float)',
+						label: 'Tint (float)',
 						id: 'float',
 						default: 1,
 						max: 1,
 						min: 0,
+						step: 0.01,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
 					},
@@ -498,136 +513,8 @@ class disguiseOSCInstance extends InstanceBase {
 				callback: async (event) => {
 					const base_address = await this.parseVariablesInString(event.options.base_address)
 					const layer = await this.parseVariablesInString(event.options.layer_name)
-					const path = `${base_address}${layer}/tint.r`
-					const float = await this.parseVariablesInString(event.options.float)
-					this.log('debug', path + ' ' + float)
-
-					sendOscMessage(path, [
-						{
-							type: 'f',
-							value: parseFloat(float),
-						},
-					])
-				},
-			},
-			layer_tintg: {
-				name: 'Layer tint green',
-				options: [
-					{
-						type: 'textinput',
-						label: 'Base address :',
-						id: 'base_address',
-						default: layer_base_address,
-						useVariables: true,
-					},
-					{
-						type: 'textinput',
-						label: 'Layer name :',
-						id: 'layer_name',
-						default: 'vid',
-						useVariables: true,
-					},
-					{
-						type: 'number',
-						label: 'Tint green (float)',
-						id: 'float',
-						default: 1,
-						max: 1,
-						min: 0,
-						regex: Regex.SIGNED_FLOAT,
-						useVariables: true,
-					},
-				],
-				callback: async (event) => {
-					const base_address = await this.parseVariablesInString(event.options.base_address)
-					const layer = await this.parseVariablesInString(event.options.layer_name)
-					const path = `${base_address}${layer}/tint.g`
-					const float = await this.parseVariablesInString(event.options.float)
-					this.log('debug', path + ' ' + float)
-
-					sendOscMessage(path, [
-						{
-							type: 'f',
-							value: parseFloat(float),
-						},
-					])
-				},
-			},
-			layer_tintb: {
-				name: 'Layer tint blue',
-				options: [
-					{
-						type: 'textinput',
-						label: 'Base address :',
-						id: 'base_address',
-						default: layer_base_address,
-						useVariables: true,
-					},
-					{
-						type: 'textinput',
-						label: 'Layer name :',
-						id: 'layer_name',
-						default: 'vid',
-						useVariables: true,
-					},
-					{
-						type: 'number',
-						label: 'Tint blue (float)',
-						id: 'float',
-						default: 1,
-						max: 1,
-						min: 0,
-						regex: Regex.SIGNED_FLOAT,
-						useVariables: true,
-					},
-				],
-				callback: async (event) => {
-					const base_address = await this.parseVariablesInString(event.options.base_address)
-					const layer = await this.parseVariablesInString(event.options.layer_name)
-					const path = `${base_address}${layer}/tint.b`
-					const float = await this.parseVariablesInString(event.options.float)
-					this.log('debug', path + ' ' + float)
-
-					sendOscMessage(path, [
-						{
-							type: 'f',
-							value: parseFloat(float),
-						},
-					])
-				},
-			},
-			layer_tinta: {
-				name: 'Layer tint alpha',
-				options: [
-					{
-						type: 'textinput',
-						label: 'Base address :',
-						id: 'base_address',
-						default: layer_base_address,
-						useVariables: true,
-					},
-					{
-						type: 'textinput',
-						label: 'Layer name :',
-						id: 'layer_name',
-						default: 'vid',
-						useVariables: true,
-					},
-					{
-						type: 'number',
-						label: 'Tint alpha (float)',
-						id: 'float',
-						default: 1,
-						max: 1,
-						min: 0,
-						regex: Regex.SIGNED_FLOAT,
-						useVariables: true,
-					},
-				],
-				callback: async (event) => {
-					const base_address = await this.parseVariablesInString(event.options.base_address)
-					const layer = await this.parseVariablesInString(event.options.layer_name)
-					const path = `${base_address}${layer}/tint.a`
+					const channel = await this.parseVariablesInString(event.options.channel)
+					const path = `${base_address}${layer}/tint.${channel}`
 					const float = await this.parseVariablesInString(event.options.float)
 					this.log('debug', path + ' ' + float)
 
@@ -642,171 +529,6 @@ class disguiseOSCInstance extends InstanceBase {
 		})
 	}
 
-	init_osc() {
-		if (this.connecting) {
-			return
-		}
-		if (this.receiver) {
-			this.receiver.close()
-		}
-
-		if (this.config.host) {
-			this.receiver = new osc.UDPPort({
-				localAddress: '0.0.0.0',
-				localPort: this.config.recieve_port,
-				address: this.config.host,
-				port: this.config.recieve_port,
-				metadata: true,
-			})
-			this.connecting = true
-
-			this.receiver.open()
-
-			this.receiver.on('error', (err) => {
-				console.log('debug', err)
-				this.log('error', 'Error: ' + err.message)
-				this.connecting = false
-				if (err.code == 'ECONNREFUSED') {
-					this.receiver.removeAllListeners()
-				}
-			})
-
-			this.receiver.on('close', () => {
-				this.log('error', 'Connection to disguise closed')
-				this.connecting = false
-				this.status(this.STATUS_WARNING, 'CLOSED')
-			})
-
-			this.receiver.on('ready', () => {
-				this.connecting = false
-				this.log('info', 'Connected to disguise:' + this.config.host)
-			})
-
-			this.receiver.on('message', (message) => {
-				this.processMessage(message)
-			})
-		}
-	}
-
-	processMessage(message) {
-		if (message.address === '/d3/showcontrol/heartbeat') {
-			if (message.args.length > 0) {
-				let heartbeat = message.args[0].value
-				this.setVariableValues({
-					heartbeat: heartbeat,
-				})
-
-				this.checkFeedbacks('Heartbeat')
-			}
-		} else if (message.address === '/d3/showcontrol/trackposition') {
-			if (message.args.length > 0) {
-				var trackPos = message.args[0].value
-				this.setVariableValues({
-					trackposition: trackPos,
-				})
-				var hh = trackPos.slice(0, 2) // split timecode - hours
-				this.setVariableValues({
-					trackposition_hh: hh,
-				})
-				var trackpos_mm = trackPos.slice(3, 5) // split timecode - minutes
-				this.setVariableValues({
-					trackposition_mm: trackpos_mm,
-				})
-				var trackpos_ss = trackPos.slice(6, 8) // split timecode - minutes
-				this.setVariableValues({
-					trackposition_ss: trackpos_ss,
-				})
-				var trackpos_ff = trackPos.slice(9, 11) // split timecode - minutes
-				this.setVariableValues({
-					trackposition_ff: trackpos_ff,
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/trackname') {
-			if (message.args.length > 0) {
-				var trackName = message.args[0].value
-				this.setVariableValues({
-					trackname: trackName,
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/trackid') {
-			if (message.args.length > 0) {
-				var trackID = message.args[0].value
-				this.setVariableValues({
-					trackid: trackID,
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/currentsectionname') {
-			if (message.args.length > 0) {
-				var currentSectionName = message.args[0].value
-				this.setVariableValues({
-					currentSectionName: currentSectionName,
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/nextsectionname') {
-			if (message.args.length > 0) {
-				var nextSectionName = message.args[0].value
-				this.setVariableValues({
-					nextSectionName: nextSectionName,
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/sectionhint') {
-			if (message.args.length > 0) {
-				var sectionHint = message.args[0].value
-				this.setVariableValues({
-					sectionHint: sectionHint,
-				})
-				var sectionElapsed = sectionHint.match(/\+\d{2}:\d{2}:\d{2}\.\d{2}/)
-				this.setVariableValues({
-					sectionElapsed: sectionElapsed,
-				})
-				var sectionRemaining = sectionHint.match(/\-\d{2}:\d{2}:\d{2}\.\d{2}/)
-				this.setVariableValues({
-					sectionRemaining: sectionRemaining,
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/volume') {
-			if (message.args.length > 0) {
-				var volume = message.args[0].value
-				this.setVariableValues({
-					volume: volume.toFixed(2) * 100, // volume in %
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/brightness') {
-			if (message.args.length > 0) {
-				var brightness = message.args[0].value
-				this.setVariableValues({
-					brightness: brightness.toFixed(2) * 100, // brightness in %
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/bpm') {
-			if (message.args.length > 0) {
-				var bpm = message.args[0].value
-				this.setVariableValues({
-					bpm: bpm,
-				})
-			}
-		} else if (message.address === '/d3/showcontrol/playmode') {
-			if (message.args.length > 0) {
-				var playMode = message.args[0].value
-				this.setVariableValues({
-					playMode: playMode,
-				})
-				if (playMode.valueOf() === 'Play') {
-					this.PLAYMODE = '00'
-				} else if (playMode.valueOf() === 'PlaySection') {
-					this.PLAYMODE = '01'
-				} else if (playMode.valueOf() === 'LoopSection') {
-					this.PLAYMODE = '02'
-				} else if (playMode.valueOf() === 'Stop') {
-					this.PLAYMODE = '03'
-				} else if (playMode.valueOf() === 'HoldSection') {
-					this.PLAYMODE = '04'
-				} else if (playMode.valueOf() === 'HoldEnd') {
-					this.PLAYMODE = '05'
-				}
-			}
-		}
-	}
 }
 
 runEntrypoint(disguiseOSCInstance, UpgradeScripts)
