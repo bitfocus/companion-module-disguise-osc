@@ -62,12 +62,7 @@ class disguiseOSCInstance extends InstanceBase {
 	async init(config) {
 		this.config = config
 
-		// this.init_osc()
-
 		oscListener.connect(this)
-
-		// Start monitoring
-		// monitor.startMonitoring()
 
 		this.updateStatus('ok')
 		this.setVariableDefinitions(this.variable_array) // export variable definitions
@@ -420,7 +415,6 @@ class disguiseOSCInstance extends InstanceBase {
 					const layer = await this.parseVariablesInString(event.options.layer_name)
 					const path = `${base_address}${layer}/blendmode`
 					const int = await this.parseVariablesInString(event.options.mode)
-					this.log('debug', path + ' ' + int)
 
 					sendOscMessage(path, [
 						{
@@ -430,7 +424,6 @@ class disguiseOSCInstance extends InstanceBase {
 					])
 				},
 			},
-
 			layer_brightness: {
 				name: 'Layer brightness',
 				options: [
@@ -464,8 +457,6 @@ class disguiseOSCInstance extends InstanceBase {
 					const layer = await this.parseVariablesInString(event.options.layer_name)
 					const path = `${base_address}${layer}/brightness`
 					const float = await this.parseVariablesInString(event.options.float)
-					this.log('debug', path + ' ' + float)
-
 					sendOscMessage(path, [
 						{
 							type: 'f',
@@ -516,8 +507,334 @@ class disguiseOSCInstance extends InstanceBase {
 					const channel = await this.parseVariablesInString(event.options.channel)
 					const path = `${base_address}${layer}/tint.${channel}`
 					const float = await this.parseVariablesInString(event.options.float)
-					this.log('debug', path + ' ' + float)
-
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
+			layer_speed: {
+				name: 'Layer speed',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Speed (int)',
+						id: 'int',
+						default: 0,
+						max: 4,
+						min: -4,
+						regex: Regex.SIGNED_NUMBER,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/speed`
+					const int = await this.parseVariablesInString(event.options.int)
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseInt(int),
+						},
+					])
+				},
+			},
+			layer_mode: {
+				name: 'Layer mode',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'dropdown',
+						id: 'int',
+						label: 'Mode :',
+						default: '1',
+						choices: choices.MODE,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const channel = await this.parseVariablesInString(event.options.channel)
+					const path = `${base_address}${layer}/mode`
+					const int = await this.parseVariablesInString(event.options.int)
+					sendOscMessage(path, [
+						{
+							type: 'i',
+							value: parseInt(int),
+						},
+					])
+				},
+			},
+			layer_at_end_point: {
+				name: 'Layer at end point',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'dropdown',
+						id: 'int',
+						label: 'At end point :',
+						default: '0',
+						choices: choices.AT_END_POINT,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const channel = await this.parseVariablesInString(event.options.channel)
+					const path = `${base_address}${layer}/at_end_point`
+					const int = await this.parseVariablesInString(event.options.int)
+					sendOscMessage(path, [
+						{
+							type: 'i',
+							value: parseInt(int),
+						},
+					])
+				},
+			},
+			layer_transition_time: {
+				name: 'Layer transition time',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Transition time (int) :',
+						id: 'int',
+						default: 0,
+						max: 10,
+						min: 0,
+						regex: Regex.SIGNED_NUMBER,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/transition_time`
+					const int = await this.parseVariablesInString(event.options.int)
+					sendOscMessage(path, [
+						{
+							type: 'i',
+							value: parseInt(int),
+						},
+					])
+				},
+			},
+			layer_volume: {
+				name: 'Layer volume',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Volume (float) :',
+						id: 'float',
+						default: 1,
+						max: 1,
+						min: 0,
+						step: 0.01,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/volume`
+					const float = await this.parseVariablesInString(event.options.float)
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
+			layer_brightness_shift: {
+				name: 'Layer brightness (shift)',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Brightness (shift) (float) :',
+						id: 'float',
+						default: 0,
+						max: 1,
+						min: -1,
+						step: 0.01,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/brightness_(shift)`
+					const float = await this.parseVariablesInString(event.options.float)
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
+			layer_contrast_scale: {
+				name: 'Layer contrast scale',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Contrast scale (float) :',
+						id: 'float',
+						default: 1,
+						max: 2,
+						min: 0,
+						step: 0.01,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/contrast_(scale)`
+					const float = await this.parseVariablesInString(event.options.float)
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
+			layer_saturation_scale: {
+				name: 'Layer saturation scale',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'video',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Saturation scale (float) :',
+						id: 'float',
+						default: 1,
+						max: 4,
+						min: 0,
+						step: 0.01,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/saturation_scale`
+					const float = await this.parseVariablesInString(event.options.float)
 					sendOscMessage(path, [
 						{
 							type: 'f',
@@ -528,7 +845,6 @@ class disguiseOSCInstance extends InstanceBase {
 			},
 		})
 	}
-
 }
 
 runEntrypoint(disguiseOSCInstance, UpgradeScripts)

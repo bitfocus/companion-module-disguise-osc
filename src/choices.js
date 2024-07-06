@@ -36,8 +36,29 @@ const TINT = [
 	{ id: 'b', label: 'Blue' },
 	{ id: 'a', label: 'Alpha' },
 ]
+
+const MODE = [
+	{ id: '0', label: 'Locked' },
+	{ id: '1', label: 'Normal' },
+	{ id: '2', label: 'Reset' },
+	{ id: '3', label: 'Pause' },
+	{ id: '4', label: 'Inframe' },
+	{ id: '5', label: 'Reverse' },
+	{ id: '6', label: 'Outframe' },
+	{ id: '7', label: 'Timecode' },
+	{ id: '8', label: 'LoopInFrame' },
+	{ id: '9', label: 'LoopOutFrame' },
+]
+
+const AT_END_POINT = [
+	{ id: '0', label: 'Loop' },
+	{ id: '1', label: 'Ping-pong' },
+	{ id: '2', label: 'Pause' },
+]
 module.exports = {
 	BLENDMODE,
 	PLAYMODE,
 	TINT,
+	MODE,
+	AT_END_POINT,
 }

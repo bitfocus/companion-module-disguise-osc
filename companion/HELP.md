@@ -41,7 +41,12 @@ This module provides default OSC controls to the d3/disguise server. Setup OSC t
 * video layer
     * blendmode
     * brightness
-    * tint (red)
-    * tint (blue)
-    * tint (green)
-    * tint (alpha)
+    * tint 
+    * speed
+    * mode
+    * at end point
+    * transition_time
+    * volume
+    * brightness (shift)
+    * contrast (scale)
+    * saturation scale
