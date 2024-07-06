@@ -37,4 +37,11 @@ This module provides default OSC controls to the d3/disguise server. Setup OSC t
 * BPM
 * Play mode
 
-**WIP**
+**Layer Messages**
+* video layer
+    * blendmode
+    * brightness
+    * tint (red)
+    * tint (blue)
+    * tint (green)
+    * tint (alpha)

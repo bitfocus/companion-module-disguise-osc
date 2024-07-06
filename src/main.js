@@ -339,6 +339,8 @@ class disguiseOSCInstance extends InstanceBase {
 						label: 'Volume (float)',
 						id: 'float',
 						default: 1,
+						max: 1,
+						min: 0,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
 					},
@@ -363,6 +365,8 @@ class disguiseOSCInstance extends InstanceBase {
 						label: 'Brightness (float)',
 						id: 'float',
 						default: 1,
+						max: 1,
+						min: 0,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
 					},
@@ -442,6 +446,8 @@ class disguiseOSCInstance extends InstanceBase {
 						label: 'Brightness (float)',
 						id: 'float',
 						default: 1,
+						max: 1,
+						min: 0,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
 					},
@@ -461,12 +467,187 @@ class disguiseOSCInstance extends InstanceBase {
 					])
 				},
 			},
+			layer_tintr: {
+				name: 'Layer tint red',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'vid',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Tint red (float)',
+						id: 'float',
+						default: 1,
+						max: 1,
+						min: 0,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/tint.r`
+					const float = await this.parseVariablesInString(event.options.float)
+					this.log('debug', path + ' ' + float)
+
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
+			layer_tintg: {
+				name: 'Layer tint green',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'vid',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Tint green (float)',
+						id: 'float',
+						default: 1,
+						max: 1,
+						min: 0,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/tint.g`
+					const float = await this.parseVariablesInString(event.options.float)
+					this.log('debug', path + ' ' + float)
+
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
+			layer_tintb: {
+				name: 'Layer tint blue',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'vid',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Tint blue (float)',
+						id: 'float',
+						default: 1,
+						max: 1,
+						min: 0,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/tint.b`
+					const float = await this.parseVariablesInString(event.options.float)
+					this.log('debug', path + ' ' + float)
+
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
+			layer_tinta: {
+				name: 'Layer tint alpha',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Base address :',
+						id: 'base_address',
+						default: layer_base_address,
+						useVariables: true,
+					},
+					{
+						type: 'textinput',
+						label: 'Layer name :',
+						id: 'layer_name',
+						default: 'vid',
+						useVariables: true,
+					},
+					{
+						type: 'number',
+						label: 'Tint alpha (float)',
+						id: 'float',
+						default: 1,
+						max: 1,
+						min: 0,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const base_address = await this.parseVariablesInString(event.options.base_address)
+					const layer = await this.parseVariablesInString(event.options.layer_name)
+					const path = `${base_address}${layer}/tint.a`
+					const float = await this.parseVariablesInString(event.options.float)
+					this.log('debug', path + ' ' + float)
+
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(float),
+						},
+					])
+				},
+			},
 		})
 	}
 
 	init_osc() {
 		if (this.connecting) {
 			return
+		}
+		if (this.receiver) {
+			this.receiver.close()
 		}
 
 		if (this.config.host) {
@@ -510,7 +691,7 @@ class disguiseOSCInstance extends InstanceBase {
 	processMessage(message) {
 		if (message.address === '/d3/showcontrol/heartbeat') {
 			if (message.args.length > 0) {
-				let heartbeat = message.args[0].value.toFixed(2)
+				let heartbeat = message.args[0].value
 				this.setVariableValues({
 					heartbeat: heartbeat,
 				})
