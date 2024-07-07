@@ -1,7 +1,5 @@
 const osc = require('osc')
 const { InstanceStatus, CompanionVariableDefinition, CompanionVariableValues } = require('@companion-module/base')
-// import type { CompanionVariableDefinition, CompanionVariableValues } from '@companion-module/base'
-
 const choices = require('./choices')
 
 const oscReceiver = {
@@ -19,32 +17,57 @@ const oscReceiver = {
 		this.udpPort.open()
 
 		this.udpPort.on('ready', () => {
-			self.log('info', `Listening for disguise showcontrol messages on port ${self.config.recieve_port}`)
 			self.updateStatus(InstanceStatus.Ok, 'Connected.')
+
+			// Start the interval to check for stopped messages
+			if (self.config.listen) {
+				self.log('info', `Listening for disguise showcontrol messages on port ${self.config.recieve_port}`)
+				this.lastMessageTimestamp = Date.now()
+				this.warningInterval = 1000 // Time in milliseconds to trigger warning
+				this.monitoringInterval = setInterval(() => this.checkForStoppedMessages(self), this.warningInterval)
+			}
 		})
 
 		this.udpPort.on('message', (oscMsg) => {
 			this.processMessage(oscMsg, self)
+			this.lastMessageTimestamp = Date.now() // Update the timestamp of the last received message
+			self.updateStatus(InstanceStatus.Ok, 'Connected.')
 		})
 
 		this.udpPort.on('error', (err) => {
 			if (err.code === 'EADDRINUSE') {
 				self.log('error', 'Error: Selected port in use.' + err.message)
-				self.updateStatus(InstanceStatus.ConnectionFailure, `Port ${self.config.localrecieve_portport} in use elsewhere.`)
+				self.updateStatus(
+					InstanceStatus.ConnectionFailure,
+					`Port ${self.config.localrecieve_portport} in use elsewhere.`
+				)
 			} else {
-				self.log('error', 'UDP port error: ' + err.message)
+				self.log('error', 'Error: UDP port error: ' + err.message)
 				self.updateStatus(InstanceStatus.UnknownError, err.message)
 			}
 		})
 	},
 
-    processMessage: function (message, self) {
+	checkForStoppedMessages: function (self) {
+		const currentTime = Date.now()
+		if (currentTime - this.lastMessageTimestamp > this.warningInterval) {
+			self.log('warn', 'Warning: No messages received from d3 in over a second.')
+			self.updateStatus(InstanceStatus.ConnectionFailure)
+			self.setVariableValues({
+				heartbeat: false,
+			})
+		}
+	},
+
+	processMessage: function (message, self) {
 		if (message.address === '/d3/showcontrol/heartbeat') {
 			if (message.args.length > 0) {
 				let heartbeat = message.args[0].value
-				self.setVariableValues({
-					heartbeat: heartbeat,
-				})
+				if (heartbeat > 0) {
+					self.setVariableValues({
+						heartbeat: true,
+					})
+				}
 
 				self.checkFeedbacks('Heartbeat')
 			}
@@ -69,6 +92,29 @@ const oscReceiver = {
 				var trackpos_ff = trackPos.slice(9, 11) // split timecode - minutes
 				self.setVariableValues({
 					trackposition_ff: trackpos_ff,
+				})
+			}
+		} else if (message.address === '/d3/showcontrol/timecodeposition') {
+			if (message.args.length > 0) {
+				var timecodePos = message.args[0].value
+				self.setVariableValues({
+					timecodeposition: timecodePos,
+				})
+				var hh = timecodePos.slice(0, 2) // split timecode - hours
+				self.setVariableValues({
+					timecodeposition_hh: hh,
+				})
+				var timecodePos_mm = timecodePos.slice(3, 5) // split timecode - minutes
+				self.setVariableValues({
+					timecodeposition_mm: timecodePos_mm,
+				})
+				var timecodePos_ss = timecodePos.slice(6, 8) // split timecode - minutes
+				self.setVariableValues({
+					timecodeposition_ss: timecodePos_ss,
+				})
+				var timecodePos_ff = timecodePos.slice(9, 11) // split timecode - minutes
+				self.setVariableValues({
+					timecodeposition_ff: timecodePos_ff,
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/trackname') {
@@ -155,56 +201,10 @@ const oscReceiver = {
 					self.PLAYMODE = '05'
 				}
 			}
+		} else {
+			self.log('debug', `OSC message not handled by processMessage :\n\t ${message.address} ${message.args[0].value}`)
 		}
-	}
-	// convertToMmSs(msValue) {
-	// 	let seconds = Math.floor(msValue / 1000)
-	// 	let mm = Math.floor(seconds / 60)
-	// 		.toString()
-	// 		.padStart(2, '0')
-	// 	let ss = Math.floor(seconds % 60)
-	// 		.toString()
-	// 		.padStart(2, '0')
-	// 	return `${mm}:${ss}`
-	// },
-	// setSectionVariables(self) {
-	// 	self.log('debug', `Setting section variables for section ${self.sectionIndex}`)
-	// 	//self.log('debug', JSON.stringify(self.presentation))
-
-	// 	//self.sectionIndex is 1-based
-	// 	if (self.sectionIndex < 1) {
-	// 		self.log('debug', `Section index is 0, setting defaults`)
-	// 		return this.setDefaultSectionVariables(self)
-	// 	}
-
-	// 	if (!self.presentation || self.presentation == '{}') {
-	// 		self.log('debug', `No presentation data, setting defaults`)
-	// 		return this.setDefaultSectionVariables(self)
-	// 	}
-
-	// 	if (self.presentation.sections.length < self.sectionIndex) {
-	// 		self.log('debug', `Section index out of range, setting defaults`)
-	// 		return this.setDefaultSectionVariables(self)
-	// 	}
-
-	// 	let section = self.presentation.sections[self.sectionIndex - 1]
-	// 	self.log(
-	// 		'debug',
-	// 		`Section ${self.sectionIndex} (${section.name}):  ${section.slideCount} slides, starting at slide ${section.firstSlide}`
-	// 	)
-	// 	self.setVariableValues({
-	// 		sectionName: section.name,
-	// 		sectionSlideCount: section.slideCount,
-	// 		sectionFirstSlide: section.firstSlide,
-	// 	})
-	// },
-	// setDefaultSectionVariables(self) {
-	// 	return self.setVariableValues({
-	// 		sectionName: '(none)',
-	// 		sectionSlideCount: 0,
-	// 		sectionFirstSlide: 0,
-	// 	})
-	// },
+	},
 }
 
 module.exports = oscReceiver

@@ -1,8 +1,9 @@
 const { InstanceBase, Regex, runEntrypoint, combineRgb } = require('@companion-module/base')
 const UpgradeScripts = require('./upgrades')
 
-const oscListener = require('./oscReceiver.js')
+const oscReceiver = require('./oscReceiver.js')
 const choices = require('./choices')
+const presets = require('./presets')
 
 let PLAYMODE
 
@@ -14,6 +15,11 @@ class disguiseOSCInstance extends InstanceBase {
 		{ variableId: 'trackposition_mm', name: 'trackposition_mm' },
 		{ variableId: 'trackposition_ss', name: 'trackposition_ss' },
 		{ variableId: 'trackposition_ff', name: 'trackposition_ff' },
+		{ variableId: 'timecodeposition', name: 'timecodeposition' },
+		{ variableId: 'timecodeposition_hh', name: 'timecodeposition_hh' },
+		{ variableId: 'timecodeposition_mm', name: 'timecodeposition_mm' },
+		{ variableId: 'timecodeposition_ss', name: 'timecodeposition_ss' },
+		{ variableId: 'timecodeposition_ff', name: 'timecodeposition_ff' },
 		{ variableId: 'trackname', name: 'trackname' },
 		{ variableId: 'trackid', name: 'trackid' },
 		{ variableId: 'currentSectionName', name: 'currentSectionName' },
@@ -62,12 +68,13 @@ class disguiseOSCInstance extends InstanceBase {
 	async init(config) {
 		this.config = config
 
-		oscListener.connect(this)
+		oscReceiver.connect(this)
 
 		this.updateStatus('ok')
 		this.setVariableDefinitions(this.variable_array) // export variable definitions
 		this.updateActions() // export actions
 		this.setFeedbackDefinitions(this.feedbacks)
+		this.setPresetDefinitions(presets.PRESETS) // export feedbacks
 
 		this.blink_button = setInterval(() => {
 			this.blink_button = !this.blink_button
@@ -78,6 +85,7 @@ class disguiseOSCInstance extends InstanceBase {
 	// When module gets deleted
 	async destroy() {
 		this.log('debug', 'destroy')
+		oscReceiver.close(this)
 	}
 
 	async configUpdated(config) {
@@ -88,28 +96,34 @@ class disguiseOSCInstance extends InstanceBase {
 	getConfigFields() {
 		return [
 			{
-				type: 'textinput',
 				id: 'host',
+				type: 'textinput',
 				label: 'Target IP',
 				width: 6,
 				default: '192.168.23.216',
 				regex: Regex.IP,
 			},
 			{
-				type: 'textinput',
 				id: 'send_port',
+				type: 'textinput',
 				label: 'Send Port',
 				width: 3,
 				default: 7401,
 				regex: Regex.PORT,
 			},
 			{
-				type: 'textinput',
 				id: 'recieve_port',
+				type: 'textinput',
 				label: 'Receive Port',
 				width: 3,
 				default: 7400,
 				regex: Regex.PORT,
+			},
+			{
+				id: 'listen',
+				type: 'checkbox',
+				label: 'Listen for OSC messages ?',
+				default: true,
 			},
 		]
 	}
