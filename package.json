@@ -1,6 +1,6 @@
 {
 	"name": "disguise-osc",
-	"version": "3.0.0",
+	"version": "2.0.0",
 	"main": "src/main.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bitfocus/companion-module-disguise-osc.git"
+		"url": "git+https://github.com/bitfocus/companion-module-disguise.git"
 	},
 	"dependencies": {
 		"@companion-module/base": "~1.0.2",
