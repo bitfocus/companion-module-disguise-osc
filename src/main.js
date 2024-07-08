@@ -89,7 +89,11 @@ class disguiseOSCInstance extends InstanceBase {
 	}
 
 	async configUpdated(config) {
+		oscReceiver.close(this)
+		
 		this.config = config
+
+		oscReceiver.connect(this)
 	}
 
 	// Return config fields for web config
@@ -357,6 +361,7 @@ class disguiseOSCInstance extends InstanceBase {
 						default: 1,
 						max: 1,
 						min: 0,
+						step: 0.01,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
 					},
@@ -377,12 +382,13 @@ class disguiseOSCInstance extends InstanceBase {
 				name: 'Brightness',
 				options: [
 					{
-						type: 'number',
+						type: 'textinput',
 						label: 'Brightness (float)',
 						id: 'float',
 						default: 1,
 						max: 1,
 						min: 0,
+						step: 0.01,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
 					},

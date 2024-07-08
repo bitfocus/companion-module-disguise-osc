@@ -52,7 +52,7 @@ const oscReceiver = {
 		const currentTime = Date.now()
 		if (currentTime - this.lastMessageTimestamp > this.warningInterval) {
 			self.log('warn', 'Warning: No messages received from d3 in over a second.')
-			self.updateStatus(InstanceStatus.ConnectionFailure)
+			self.updateStatus(InstanceStatus.Warning)
 			self.setVariableValues({
 				heartbeat: false,
 			})
@@ -171,7 +171,7 @@ const oscReceiver = {
 			if (message.args.length > 0) {
 				var brightness = message.args[0].value
 				self.setVariableValues({
-					brightness: brightness.toFixed(2) * 100, // brightness in %
+					brightness: brightness.toFixed(2), // brightness
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/bpm') {

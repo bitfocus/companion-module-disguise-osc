@@ -139,7 +139,7 @@ const PRESETS = {
 				up: [],
 			},
 		],
-		feedbacks: [{}],
+		feedbacks: [],
 	},
 	nextsection: {
 		name: 'Next section',
@@ -156,43 +156,9 @@ const PRESETS = {
 				up: [],
 			},
 		],
-		feedbacks: [{}],
+		feedbacks: [],
 	},
-    previoustrack: {
-		name: 'Previous track',
-		category: 'Show control',
-		type: 'button',
-		style: {
-			color: combineRgb(255, 255, 255),
-			png64: fs.readFileSync(`${imageDir}/prevTrack.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
-		},
-		steps: [
-			{
-				down: [{ actionId: 'previoustrack' }],
-				up: [],
-			},
-		],
-		feedbacks: [{}],
-	},
-    nexttrack: {
-		name: 'Next track',
-		category: 'Show control',
-		type: 'button',
-		style: {
-			color: combineRgb(255, 255, 255),
-			png64: fs.readFileSync(`${imageDir}/nextTrack.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
-		},
-		steps: [
-			{
-				down: [{ actionId: 'nexttrack' }],
-				up: [],
-			},
-		],
-		feedbacks: [{}],
-	},
-    returntostart: {
+	returntostart: {
 		name: 'Return to start',
 		category: 'Show control',
 		type: 'button',
@@ -207,7 +173,77 @@ const PRESETS = {
 				up: [],
 			},
 		],
-		feedbacks: [{}],
+		feedbacks: [],
+	},
+	previoustrack: {
+		name: 'Previous track',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(255, 255, 255),
+			png64: fs.readFileSync(`${imageDir}/prevTrack.png`, 'base64'),
+			bgcolor: combineRgb(255, 255, 255),
+		},
+		steps: [
+			{
+				down: [{ actionId: 'previoustrack' }],
+				up: [],
+			},
+		],
+		feedbacks: [],
+	},
+	nexttrack: {
+		name: 'Next track',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(255, 255, 255),
+			png64: fs.readFileSync(`${imageDir}/nextTrack.png`, 'base64'),
+			bgcolor: combineRgb(255, 255, 255),
+		},
+		steps: [
+			{
+				down: [{ actionId: 'nexttrack' }],
+				up: [],
+			},
+		],
+		feedbacks: [],
+	},
+	fadedown: {
+		name: 'Fade down',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(255, 255, 255),
+			text: 'fade\ndown',
+			size: '18',
+			bgcolor: combineRgb(16, 16, 16),
+		},
+		steps: [
+			{
+				down: [{ actionId: 'fadedown' }],
+				up: [],
+			},
+		],
+		feedbacks: [],
+	},
+	fadeup: {
+		name: 'Fade up',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(255, 255, 255),
+			text: 'fade\nup',
+			size: '18',
+			bgcolor: combineRgb(16, 16, 16),
+		},
+		steps: [
+			{
+				down: [{ actionId: 'fadeup' }],
+				up: [],
+			},
+		],
+		feedbacks: [],
 	},
 }
 
