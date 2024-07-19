@@ -28,6 +28,7 @@ This module provides default OSC controls to the d3/disguise server. Setup OSC t
 * Track position
 * Track name
 * Track ID
+* Timecode position (if supported in d3 version)
 * Current section name
 * Next section name
 * Section hint

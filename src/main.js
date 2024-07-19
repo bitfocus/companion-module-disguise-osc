@@ -123,12 +123,12 @@ class disguiseOSCInstance extends InstanceBase {
 				default: 7400,
 				regex: Regex.PORT,
 			},
-			{
-				id: 'listen',
-				type: 'checkbox',
-				label: 'Listen for OSC messages ?',
-				default: true,
-			},
+			// {
+			// 	id: 'listen',
+			// 	type: 'checkbox',
+			// 	label: 'Listen for OSC messages ?',
+			// 	default: true,
+			// },
 		]
 	}
 

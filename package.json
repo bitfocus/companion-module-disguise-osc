@@ -1,5 +1,5 @@
 {
-	"name": "disguise-osc",
+	"name": "disguise",
 	"version": "2.0.0",
 	"main": "src/main.js",
 	"scripts": {

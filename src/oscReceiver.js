@@ -51,8 +51,8 @@ const oscReceiver = {
 	checkForStoppedMessages: function (self) {
 		const currentTime = Date.now()
 		if (currentTime - this.lastMessageTimestamp > this.warningInterval) {
-			self.log('warn', 'Warning: No messages received from d3 in over a second.')
-			self.updateStatus(InstanceStatus.Warning)
+			self.log('info', 'No messages received from d3 in over a second.')
+			// self.updateStatus(InstanceStatus.Warning)
 			self.setVariableValues({
 				heartbeat: false,
 			})
