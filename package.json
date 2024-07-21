@@ -1,26 +1,22 @@
 {
-	"name": "disguise",
-	"version": "1.1.2",
-	"api_version": "1.0.0",
-	"keywords": [
-		"Media Server"
-	],
-	"manufacturer": "Disguise",
-	"product": "Disguise - OSC",
-	"shortname": "d3osc",
-	"homepage": "https://github.com/bitfocus/companion-module-disguise#readme",
-	"description": "Disguise OSC Control",
-	"main": "disguise.js",
+	"name": "disguise-osc",
+	"version": "2.0.0",
+	"main": "src/main.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"format": "prettier -w ."
 	},
-	"author": "William Viker <william@bitfocus.io>",
 	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/bitfocus/companion-module-disguise/issues"
-	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bitfocus/companion-module-disguise.git"
-	}
+		"url": "git+https://github.com/bitfocus/companion-module-generic-osc.git"
+	},
+	"dependencies": {
+		"@companion-module/base": "~1.8.0",
+		"osc": "^2.4.3"
+	},
+	"devDependencies": {
+		"@companion-module/tools": "^1.4.1"
+	},
+	"prettier": "@companion-module/tools/.prettierrc.json"
 }
