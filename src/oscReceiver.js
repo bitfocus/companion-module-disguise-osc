@@ -2,7 +2,10 @@ const osc = require('osc')
 const { InstanceStatus, CompanionVariableDefinition, CompanionVariableValues } = require('@companion-module/base')
 const choices = require('./choices')
 
+
 const oscReceiver = {
+	lastHeartbeat: null,
+
 	close: async function () {
 		await this.udpPort.close()
 	},
@@ -19,18 +22,11 @@ const oscReceiver = {
 		this.udpPort.on('ready', () => {
 			self.updateStatus(InstanceStatus.Ok, 'Connected.')
 
-			// Start the interval to check for stopped messages
-			if (self.config.listen) {
-				self.log('info', `Listening for disguise showcontrol messages on port ${self.config.recieve_port}`)
-				this.lastMessageTimestamp = Date.now()
-				this.warningInterval = 1000 // Time in milliseconds to trigger warning
-				this.monitoringInterval = setInterval(() => this.checkForStoppedMessages(self), this.warningInterval)
-			}
+			self.log('info', `Listening for disguise showcontrol messages on port ${self.config.recieve_port}`)
 		})
 
 		this.udpPort.on('message', (oscMsg) => {
 			this.processMessage(oscMsg, self)
-			this.lastMessageTimestamp = Date.now() // Update the timestamp of the last received message
 			self.updateStatus(InstanceStatus.Ok, 'Connected.')
 		})
 
@@ -48,28 +44,15 @@ const oscReceiver = {
 		})
 	},
 
-	checkForStoppedMessages: function (self) {
-		const currentTime = Date.now()
-		if (currentTime - this.lastMessageTimestamp > this.warningInterval) {
-			self.log('info', 'No messages received from d3 in over a second.')
-			// self.updateStatus(InstanceStatus.Warning)
-			self.setVariableValues({
-				heartbeat: false,
-			})
-		}
-	},
-
 	processMessage: function (message, self) {
 		if (message.address === '/d3/showcontrol/heartbeat') {
 			if (message.args.length > 0) {
 				let heartbeat = message.args[0].value
-				if (heartbeat > 0) {
-					self.setVariableValues({
-						heartbeat: true,
-					})
-				}
+				// this.lastHeartbeat =  `Heartbeat: ${heartbeat.toFixed(2)}`
+				self.setVariableValues({
+					heartbeat: heartbeat.toFixed(2),
+				})
 
-				self.checkFeedbacks('Heartbeat')
 			}
 		} else if (message.address === '/d3/showcontrol/trackposition') {
 			if (message.args.length > 0) {

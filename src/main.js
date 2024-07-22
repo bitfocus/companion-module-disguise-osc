@@ -63,13 +63,31 @@ class disguiseOSCInstance extends InstanceBase {
 				}
 			},
 		},
+		Heartbeat: {
+			name: 'Indicate heartbeat',
+			type: 'boolean',
+			description: 'Blinks background if disguise heartbeat is active',
+			defaultStyle: {
+				bgcolor: combineRgb(204, 0, 0),
+				color: combineRgb(0, 0, 0),
+			},
+			options: [],
+			callback: (feedback) => {
+				if (oscReceiver.lastHeartbeat != this.getVariableValue('heartbeat') && this.blink_button) {
+					return true
+				} else if (oscReceiver.lastHeartbeat === this.getVariableValue('heartbeat')) {
+					this.PLAYMODE = null
+					return false
+				}
+				oscReceiver.lastHeartbeat = this.getVariableValue('heartbeat')
+			},
+		},
 	}
 
 	async init(config) {
 		this.config = config
 
 		oscReceiver.connect(this)
-
 		this.updateStatus('ok')
 		this.setVariableDefinitions(this.variable_array) // export variable definitions
 		this.updateActions() // export actions
@@ -79,18 +97,21 @@ class disguiseOSCInstance extends InstanceBase {
 		this.blink_button = setInterval(() => {
 			this.blink_button = !this.blink_button
 
-			this.checkFeedbacks('PlayMode')
+			this.checkFeedbacks()
 		}, 333)
+
+		await this.configUpdated(config)
 	}
 	// When module gets deleted
 	async destroy() {
 		this.log('debug', 'destroy')
 		oscReceiver.close(this)
+		delete oscReceiver(this)
 	}
 
 	async configUpdated(config) {
 		oscReceiver.close(this)
-		
+
 		this.config = config
 
 		oscReceiver.connect(this)
@@ -123,12 +144,6 @@ class disguiseOSCInstance extends InstanceBase {
 				default: 7400,
 				regex: Regex.PORT,
 			},
-			// {
-			// 	id: 'listen',
-			// 	type: 'checkbox',
-			// 	label: 'Listen for OSC messages ?',
-			// 	default: true,
-			// },
 		]
 	}
 
