@@ -48,7 +48,6 @@ const oscReceiver = {
 		if (message.address === '/d3/showcontrol/heartbeat') {
 			if (message.args.length > 0) {
 				let heartbeat = message.args[0].value
-				// this.lastHeartbeat =  `Heartbeat: ${heartbeat.toFixed(2)}`
 				self.setVariableValues({
 					heartbeat: heartbeat.toFixed(2),
 				})
@@ -147,7 +146,7 @@ const oscReceiver = {
 			if (message.args.length > 0) {
 				var volume = message.args[0].value
 				self.setVariableValues({
-					volume: volume.toFixed(2) * 100, // volume in %
+					volume: volume.toFixed(2), // volume in %
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/brightness') {
