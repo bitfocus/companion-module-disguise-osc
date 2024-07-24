@@ -1,4 +1,9 @@
-const { combineRgb } = require('@companion-module/base')
+const {
+	InstanceStatus,
+	CompanionVariableDefinition,
+	CompanionVariableValues,
+	combineRgb,
+} = require('@companion-module/base')
 
 const fs = require('fs')
 const path = require('path')
@@ -244,6 +249,160 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
+	},
+	hold: {
+		name: 'Hold',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(255, 255, 255),
+			text: 'hold',
+			size: '18',
+			bgcolor: combineRgb(16, 16, 16),
+		},
+		steps: [
+			{
+				down: [{ actionId: 'hold' }],
+				up: [],
+			},
+		],
+		feedbacks: [],
+	},
+	decrement_brightness: {
+		name: 'Reduce master brightness',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(110, 110, 110),
+			text: '$(d3-osc:brightness)',
+			alignment: 'center:top',
+			size: '14',
+			bgcolor: combineRgb(255, 255, 255),
+			png64: fs.readFileSync(`${imageDir}/brightness_down.png`, 'base64'),
+		},
+		steps: [
+			{
+				down: [
+					{
+						actionId: 'decrement_brightness',
+						options: {
+							float: '0.01',
+						},
+					},
+				],
+				up: [],
+			},
+		],
+		feedbacks: [
+			{
+				feedbackId: 'Brightness',
+				style: {
+					bgcolor: combineRgb(110, 0, 0),
+				},
+			},
+		],
+	},
+	increment_brightness: {
+		name: 'Raise master brightness',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(110, 110, 110),
+			text: '$(d3-osc:brightness)',
+			alignment: 'center:top',
+			size: '14',
+			bgcolor: combineRgb(255, 255, 255),
+			png64: fs.readFileSync(`${imageDir}/brightness_up.png`, 'base64'),
+		},
+		steps: [
+			{
+				down: [
+					{
+						actionId: 'increment_brightness',
+						options: {
+							float: '0.01',
+						},
+					},
+				],
+				up: [],
+			},
+		],
+		feedbacks: [
+			{
+				feedbackId: 'Brightness',
+				style: {
+					bgcolor: combineRgb(110, 0, 0),
+				},
+			},
+		],
+	},
+	decrement_volume: {
+		name: 'Reduce master volume',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(110, 110, 110),
+			text: '$(d3-osc:volume)',
+			alignment: 'center:top',
+			size: '14',
+			bgcolor: combineRgb(255, 255, 255),
+			png64: fs.readFileSync(`${imageDir}/volume_down.png`, 'base64'),
+		},
+		steps: [
+			{
+				down: [
+					{
+						actionId: 'decrement_volume',
+						options: {
+							float: '0.01',
+						},
+					},
+				],
+				up: [],
+			},
+		],
+		feedbacks: [
+			{
+				feedbackId: 'Volume',
+				style: {
+					bgcolor: combineRgb(110, 0, 0),
+				},
+			},
+		],
+	},
+	increment_volume: {
+		name: 'Raise master volume',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: combineRgb(110, 110, 110),
+			text: '$(d3-osc:volume)',
+			alignment: 'center:top',
+			size: '14',
+			bgcolor: combineRgb(255, 255, 255),
+			png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
+		},
+		steps: [
+			{
+				down: [
+					{
+						actionId: 'increment_volume',
+						options: {
+							float: '0.01',
+						},
+					},
+				],
+				up: [],
+			},
+		],
+		feedbacks: [
+			{
+				feedbackId: 'Volume',
+				style: {
+					bgcolor: combineRgb(110, 0, 0),
+				},
+			},
+		],
 	},
 }
 
