@@ -4,6 +4,7 @@ const UpgradeScripts = require('./upgrades')
 const oscReceiver = require('./oscReceiver.js')
 const choices = require('./choices')
 const presets = require('./presets')
+const utils = require('./utils')
 
 let PLAYMODE
 
@@ -39,7 +40,7 @@ class disguiseOSCInstance extends InstanceBase {
 
 	feedbacks = {
 		PlayMode: {
-			name: 'Indicate playmode',
+			name: 'playmode',
 			type: 'boolean',
 			description: 'Blinks background if selected playmode is active',
 			defaultStyle: {
@@ -64,9 +65,9 @@ class disguiseOSCInstance extends InstanceBase {
 			},
 		},
 		Heartbeat: {
-			name: 'Indicate heartbeat',
+			name: 'heartbeat',
 			type: 'boolean',
-			description: 'Blinks background if disguise heartbeat is active',
+			description: 'Blinks background if disguise heartbeat is detected',
 			defaultStyle: {
 				bgcolor: combineRgb(204, 0, 0),
 				color: combineRgb(0, 0, 0),
@@ -80,6 +81,36 @@ class disguiseOSCInstance extends InstanceBase {
 					return false
 				}
 				oscReceiver.lastHeartbeat = this.getVariableValue('heartbeat')
+			},
+		},
+		Brightness: {
+			name: 'Master brightness',
+			type: 'boolean',
+			description: 'Blinks background if disguise master brightness is zero',
+			defaultStyle: {
+				bgcolor: combineRgb(204, 0, 0),
+				color: combineRgb(110, 110, 110),
+			},
+			options: [],
+			callback: (feedback) => {
+				if (this.getVariableValue('brightness') === '0.00' && this.blink_button) {
+					return true
+				}
+			},
+		},
+		Volume: {
+			name: 'Master volume',
+			type: 'boolean',
+			description: 'Blinks background if disguise master volume is zero',
+			defaultStyle: {
+				bgcolor: combineRgb(204, 0, 0),
+				color: combineRgb(110, 110, 110),
+			},
+			options: [],
+			callback: (feedback) => {
+				if (this.getVariableValue('volume') === '0.00' && this.blink_button) {
+					return true
+				}
 			},
 		},
 	}
@@ -98,7 +129,7 @@ class disguiseOSCInstance extends InstanceBase {
 			this.blink_button = !this.blink_button
 
 			this.checkFeedbacks()
-		}, 333)
+		}, 500)
 
 		await this.configUpdated(config)
 	}
@@ -393,14 +424,14 @@ class disguiseOSCInstance extends InstanceBase {
 					])
 				},
 			},
-			brightness: {
-				name: 'Brightness',
+			increment_brightness: {
+				name: 'Increase brightness',
 				options: [
 					{
 						type: 'textinput',
-						label: 'Brightness (float)',
+						label: 'Step (float)',
 						id: 'float',
-						default: 1,
+						default: 0.01,
 						max: 1,
 						min: 0,
 						step: 0.01,
@@ -409,17 +440,107 @@ class disguiseOSCInstance extends InstanceBase {
 					},
 				],
 				callback: async (event) => {
-					const path = '/d3/showcontrol/brightness'
 					const float = await this.parseVariablesInString(event.options.float)
-
+					const brightness = this.getVariableValue('brightness')
+					const new_brightness = utils.increment_float(brightness, float)
+					this.log('debug', `new_brightness === ${new_brightness}`)
+					const path = '/d3/showcontrol/brightness'
 					sendOscMessage(path, [
 						{
 							type: 'f',
-							value: parseFloat(float),
+							value: parseFloat(new_brightness),
 						},
 					])
 				},
 			},
+			decrement_brightness: {
+				name: 'Decrease brightness',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Step (float)',
+						id: 'float',
+						default: 0.01,
+						max: 1,
+						min: 0,
+						step: 0.01,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const float = await this.parseVariablesInString(event.options.float)
+					const brightness = this.getVariableValue('brightness')
+					const new_brightness = utils.decrement_float(brightness, float)
+					this.log('debug', `new_brightness === ${new_brightness}`)
+					const path = '/d3/showcontrol/brightness'
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(new_brightness),
+						},
+					])
+				},
+			},
+			increment_volume: {
+				name: 'Increase brightvolumeness',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Step (float)',
+						id: 'float',
+						default: 0.01,
+						max: 1,
+						min: 0,
+						step: 0.01,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const float = await this.parseVariablesInString(event.options.float)
+					const volume = this.getVariableValue('volume')
+					const new_volume = utils.increment_float(volume, float)
+					// this.log('debug', `new_volume === ${new_volume}`)
+					const path = '/d3/showcontrol/volume'
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(new_volume),
+						},
+					])
+				},
+			},
+			decrement_volume: {
+				name: 'Decrease volume',
+				options: [
+					{
+						type: 'textinput',
+						label: 'Step (float)',
+						id: 'float',
+						default: 0.01,
+						max: 1,
+						min: 0,
+						step: 0.01,
+						regex: Regex.SIGNED_FLOAT,
+						useVariables: true,
+					},
+				],
+				callback: async (event) => {
+					const float = await this.parseVariablesInString(event.options.float)
+					const volume = this.getVariableValue('volume')
+					const new_volume = utils.decrement_float(volume, float)
+					// this.log('debug', `new_volume === ${new_volume}`)
+					const path = '/d3/showcontrol/volume'
+					sendOscMessage(path, [
+						{
+							type: 'f',
+							value: parseFloat(new_volume),
+						},
+					])
+				},
+			},
+			// layer control actions
 			layer_blendmode: {
 				name: 'Layer blendmode',
 				options: [
