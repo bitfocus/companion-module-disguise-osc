@@ -1,12 +1,6 @@
-const {
-	InstanceStatus,
-	CompanionVariableDefinition,
-	CompanionVariableValues,
-	combineRgb,
-} = require('@companion-module/base')
-
 const fs = require('fs')
 const path = require('path')
+const utils = require('./utils')
 
 // Path to the directory
 const imageDir = path.join(__dirname, 'images')
@@ -17,9 +11,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/play.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -34,7 +28,7 @@ const PRESETS = {
 					mode: '00',
 				},
 				style: {
-					bgcolor: combineRgb(0, 0, 0),
+					bgcolor: utils.MatteBlack,
 				},
 			},
 		],
@@ -44,9 +38,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/playToEndOfSection.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -61,7 +55,7 @@ const PRESETS = {
 					mode: '01',
 				},
 				style: {
-					bgcolor: combineRgb(0, 0, 0),
+					bgcolor: utils.MatteBlack,
 				},
 			},
 			{
@@ -70,7 +64,7 @@ const PRESETS = {
 					mode: '04',
 				},
 				style: {
-					bgcolor: combineRgb(0, 0, 0),
+					bgcolor: utils.MatteBlack,
 				},
 			},
 		],
@@ -80,9 +74,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/loop.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -97,7 +91,7 @@ const PRESETS = {
 					mode: '02',
 				},
 				style: {
-					bgcolor: combineRgb(0, 0, 0),
+					bgcolor: utils.MatteBlack,
 				},
 			},
 		],
@@ -107,9 +101,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/stop.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -124,7 +118,7 @@ const PRESETS = {
 					mode: '03',
 				},
 				style: {
-					bgcolor: combineRgb(0, 0, 0),
+					bgcolor: utils.MatteBlack,
 				},
 			},
 		],
@@ -134,9 +128,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/prevSection.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -151,9 +145,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/nextSection.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -168,9 +162,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/backToStart.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -185,9 +179,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/prevTrack.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -202,9 +196,9 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/nextTrack.png`, 'base64'),
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 		},
 		steps: [
 			{
@@ -219,10 +213,11 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			text: 'fade\ndown',
+			png64: fs.readFileSync(`${imageDir}/empty.png`, 'base64'),
 			size: '18',
-			bgcolor: combineRgb(16, 16, 16),
+			bgcolor: utils.MatteBlack,
 		},
 		steps: [
 			{
@@ -237,10 +232,11 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			text: 'fade\nup',
+			png64: fs.readFileSync(`${imageDir}/empty.png`, 'base64'),
 			size: '18',
-			bgcolor: combineRgb(16, 16, 16),
+			bgcolor: utils.MatteBlack,
 		},
 		steps: [
 			{
@@ -255,10 +251,11 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(255, 255, 255),
+			color: utils.Gainsboro,
 			text: 'hold',
+			png64: fs.readFileSync(`${imageDir}/empty.png`, 'base64'),
 			size: '18',
-			bgcolor: combineRgb(16, 16, 16),
+			bgcolor: utils.MatteBlack,
 		},
 		steps: [
 			{
@@ -273,11 +270,11 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(110, 110, 110),
+			color: utils.Gainsboro,
 			text: '$(d3-osc:brightness)',
 			alignment: 'center:top',
 			size: '14',
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/brightness_down.png`, 'base64'),
 		},
 		steps: [
@@ -297,21 +294,21 @@ const PRESETS = {
 			{
 				feedbackId: 'Brightness',
 				style: {
-					bgcolor: combineRgb(110, 0, 0),
+					bgcolor: utils.FireBrick,
 				},
 			},
 		],
 	},
 	increment_brightness: {
-		name: 'Raise master brightness',
+		name: 'Increase master brightness',
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(110, 110, 110),
+			color: utils.Gainsboro,
 			text: '$(d3-osc:brightness)',
 			alignment: 'center:top',
 			size: '14',
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/brightness_up.png`, 'base64'),
 		},
 		steps: [
@@ -331,7 +328,7 @@ const PRESETS = {
 			{
 				feedbackId: 'Brightness',
 				style: {
-					bgcolor: combineRgb(110, 0, 0),
+					bgcolor: utils.FireBrick,
 				},
 			},
 		],
@@ -341,11 +338,11 @@ const PRESETS = {
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(110, 110, 110),
+			color: utils.Gainsboro,
 			text: '$(d3-osc:volume)',
 			alignment: 'center:top',
 			size: '14',
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/volume_down.png`, 'base64'),
 		},
 		steps: [
@@ -365,21 +362,21 @@ const PRESETS = {
 			{
 				feedbackId: 'Volume',
 				style: {
-					bgcolor: combineRgb(110, 0, 0),
+					bgcolor: utils.FireBrick,
 				},
 			},
 		],
 	},
 	increment_volume: {
-		name: 'Raise master volume',
+		name: 'Increase master volume',
 		category: 'Show control',
 		type: 'button',
 		style: {
-			color: combineRgb(110, 110, 110),
+			color: utils.Gainsboro,
 			text: '$(d3-osc:volume)',
 			alignment: 'center:top',
 			size: '14',
-			bgcolor: combineRgb(255, 255, 255),
+			bgcolor: utils.Gainsboro,
 			png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
 		},
 		steps: [
@@ -399,7 +396,7 @@ const PRESETS = {
 			{
 				feedbackId: 'Volume',
 				style: {
-					bgcolor: combineRgb(110, 0, 0),
+					bgcolor: utils.FireBrick,
 				},
 			},
 		],
