@@ -1,13 +1,10 @@
 const { InstanceBase, Regex, runEntrypoint, combineRgb } = require('@companion-module/base')
 const UpgradeScripts = require('./upgrades')
 
-const oscReceiver = require('./oscReceiver.js')
+const osc_server = require('./osc_server.js')
 const choices = require('./choices')
 const presets = require('./presets')
 const utils = require('./utils')
-
-let PLAYMODE
-
 class disguiseOSCInstance extends InstanceBase {
 	variable_array = [
 		{ variableId: 'heartbeat', name: 'heartbeat' },
@@ -74,13 +71,13 @@ class disguiseOSCInstance extends InstanceBase {
 			},
 			options: [],
 			callback: (feedback) => {
-				if (oscReceiver.lastHeartbeat != this.getVariableValue('heartbeat') && this.blink_button) {
+				if (osc_server.lastHeartbeat != this.getVariableValue('heartbeat') && this.blink_button) {
 					return true
-				} else if (oscReceiver.lastHeartbeat === this.getVariableValue('heartbeat')) {
+				} else if (osc_server.lastHeartbeat === this.getVariableValue('heartbeat')) {
 					this.PLAYMODE = null
 					return false
 				}
-				oscReceiver.lastHeartbeat = this.getVariableValue('heartbeat')
+				osc_server.lastHeartbeat = this.getVariableValue('heartbeat')
 			},
 		},
 		Brightness: {
@@ -113,12 +110,13 @@ class disguiseOSCInstance extends InstanceBase {
 				}
 			},
 		},
+		
 	}
 
 	async init(config) {
 		this.config = config
 
-		oscReceiver.connect(this)
+		osc_server.connect(this)
 		this.updateStatus('ok')
 		this.setVariableDefinitions(this.variable_array) // export variable definitions
 		this.updateActions() // export actions
@@ -136,16 +134,16 @@ class disguiseOSCInstance extends InstanceBase {
 	// When module gets deleted
 	async destroy() {
 		this.log('debug', 'destroy')
-		oscReceiver.close(this)
-		delete oscReceiver(this)
+		osc_server.close(this)
+		delete osc_server(this)
 	}
 
 	async configUpdated(config) {
-		oscReceiver.close(this)
+		osc_server.close(this)
 
 		this.config = config
 
-		oscReceiver.connect(this)
+		osc_server.connect(this)
 	}
 
 	// Return config fields for web config
@@ -538,15 +536,13 @@ class disguiseOSCInstance extends InstanceBase {
 						id: 'press',
 						type: 'static-text',
 						label: 'Add Press action',
-						value:
-							'Internal: Button: Trigger press (~40ms delay, force press if pressed, this button)',
+						value: 'Internal: Button: Trigger press (~40ms delay, force press if pressed, this button)',
 					},
 					{
 						id: 'release',
 						type: 'static-text',
 						label: 'And Release action',
-						value:
-							'Internal: Actions: Abort delayed actions on a button (this button)',
+						value: 'Internal: Actions: Abort delayed actions on a button (this button)',
 					},
 				],
 				callback: async (event) => {
