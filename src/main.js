@@ -397,33 +397,6 @@ class disguiseOSCInstance extends InstanceBase {
 					sendOscMessage(path, [])
 				},
 			},
-			volume: {
-				name: 'Volume',
-				options: [
-					{
-						type: 'number',
-						label: 'Volume (float)',
-						id: 'float',
-						default: 1,
-						max: 1,
-						min: 0,
-						step: 0.01,
-						regex: Regex.SIGNED_FLOAT,
-						useVariables: true,
-					},
-				],
-				callback: async (event) => {
-					const path = '/d3/showcontrol/volume'
-					const float = await this.parseVariablesInString(event.options.float)
-
-					sendOscMessage(path, [
-						{
-							type: 'f',
-							value: parseFloat(float),
-						},
-					])
-				},
-			},
 			increment_brightness: {
 				name: 'Increase brightness',
 				options: [
@@ -437,6 +410,18 @@ class disguiseOSCInstance extends InstanceBase {
 						step: 0.01,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
+					},
+					{
+						id: 'press',
+						type: 'static-text',
+						label: 'Add Press action',
+						value: 'Internal: Button: Trigger press (~40ms delay, force press if pressed, this button)',
+					},
+					{
+						id: 'release',
+						type: 'static-text',
+						label: 'And Release action',
+						value: 'Internal: Actions: Abort delayed actions on a button (this button)',
 					},
 				],
 				callback: async (event) => {
@@ -467,6 +452,18 @@ class disguiseOSCInstance extends InstanceBase {
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
 					},
+					{
+						id: 'press',
+						type: 'static-text',
+						label: 'Add Press action',
+						value: 'Internal: Button: Trigger press (~40ms delay, force press if pressed, this button)',
+					},
+					{
+						id: 'release',
+						type: 'static-text',
+						label: 'And Release action',
+						value: 'Internal: Actions: Abort delayed actions on a button (this button)',
+					},
 				],
 				callback: async (event) => {
 					const float = await this.parseVariablesInString(event.options.float)
@@ -483,7 +480,7 @@ class disguiseOSCInstance extends InstanceBase {
 				},
 			},
 			increment_volume: {
-				name: 'Increase brightvolumeness',
+				name: 'Increase volume',
 				options: [
 					{
 						type: 'textinput',
@@ -495,6 +492,18 @@ class disguiseOSCInstance extends InstanceBase {
 						step: 0.01,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
+					},
+					{
+						id: 'press',
+						type: 'static-text',
+						label: 'Add Press action',
+						value: 'Internal: Button: Trigger press (~40ms delay, force press if pressed, this button)',
+					},
+					{
+						id: 'release',
+						type: 'static-text',
+						label: 'And Release action',
+						value: 'Internal: Actions: Abort delayed actions on a button (this button)',
 					},
 				],
 				callback: async (event) => {
@@ -524,6 +533,20 @@ class disguiseOSCInstance extends InstanceBase {
 						step: 0.01,
 						regex: Regex.SIGNED_FLOAT,
 						useVariables: true,
+					},
+					{
+						id: 'press',
+						type: 'static-text',
+						label: 'Add Press action',
+						value:
+							'Internal: Button: Trigger press (~40ms delay, force press if pressed, this button)',
+					},
+					{
+						id: 'release',
+						type: 'static-text',
+						label: 'And Release action',
+						value:
+							'Internal: Actions: Abort delayed actions on a button (this button)',
 					},
 				],
 				callback: async (event) => {
