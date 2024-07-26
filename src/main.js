@@ -14,6 +14,7 @@ class disguiseOSCInstance extends InstanceBase {
 		super(internal)
 
 		Object.assign(this, {
+			...presets,
 			...variables,
 		})
 
@@ -106,7 +107,9 @@ class disguiseOSCInstance extends InstanceBase {
 		this.updateStatus('ok')
 		this.updateActions() // export actions
 		this.setFeedbackDefinitions(this.feedbacks)
-		this.setPresetDefinitions(presets.PRESETS) // export feedbacks
+		// this.setPresetDefinitions(presets.PRESETS) // export feedbacks
+		
+		self.initPresets()
 		self.initVariables()
 
 		this.blink_button = setInterval(() => {

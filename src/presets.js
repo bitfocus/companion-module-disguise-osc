@@ -2,11 +2,32 @@ const fs = require('fs')
 const path = require('path')
 const utils = require('./utils')
 
-// Path to the directory
+// Path to button image directory
 const imageDir = path.join(__dirname, 'images')
 
-const PRESETS = {
-	play: {
+exports.initPresets = function () {
+	let presets = {}
+
+	presets['heartbeat'] = {
+		name: 'Heartbeat',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: utils.Gainsboro,
+			png64: fs.readFileSync(`${imageDir}/heartbeat.png`, 'base64'),
+			bgcolor: utils.MatteBlack,
+		},
+		steps: [],
+		feedbacks: [
+			{
+				feedbackId: 'Heartbeat',
+				style: {
+					bgcolor: utils.Gainsboro,
+				},
+			},
+		],
+	}
+	presets['play'] = {
 		name: 'Play',
 		category: 'Show control',
 		type: 'button',
@@ -32,8 +53,8 @@ const PRESETS = {
 				},
 			},
 		],
-	},
-	playsection: {
+	}
+	presets['playsection'] = {
 		name: 'Play to end of section',
 		category: 'Show control',
 		type: 'button',
@@ -68,8 +89,8 @@ const PRESETS = {
 				},
 			},
 		],
-	},
-	loopSection: {
+	}
+	presets['loopSection'] = {
 		name: 'Loop section',
 		category: 'Show control',
 		type: 'button',
@@ -95,8 +116,8 @@ const PRESETS = {
 				},
 			},
 		],
-	},
-	stop: {
+	}
+	presets['stop'] = {
 		name: 'Stop',
 		category: 'Show control',
 		type: 'button',
@@ -122,8 +143,8 @@ const PRESETS = {
 				},
 			},
 		],
-	},
-	previoussection: {
+	}
+	presets['previoussection'] = {
 		name: 'Previous section',
 		category: 'Show control',
 		type: 'button',
@@ -139,8 +160,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	nextsection: {
+	}
+	presets['nextsection'] = {
 		name: 'Next section',
 		category: 'Show control',
 		type: 'button',
@@ -156,8 +177,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	returntostart: {
+	}
+	presets['returntostart'] = {
 		name: 'Return to start',
 		category: 'Show control',
 		type: 'button',
@@ -173,8 +194,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	previoustrack: {
+	}
+	presets['previoustrack'] = {
 		name: 'Previous track',
 		category: 'Show control',
 		type: 'button',
@@ -190,8 +211,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	nexttrack: {
+	}
+	presets['nexttrack'] = {
 		name: 'Next track',
 		category: 'Show control',
 		type: 'button',
@@ -207,8 +228,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	fadedown: {
+	}
+	presets['fadedown'] = {
 		name: 'Fade down',
 		category: 'Show control',
 		type: 'button',
@@ -226,8 +247,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	fadeup: {
+	}
+	presets['fadeup'] = {
 		name: 'Fade up',
 		category: 'Show control',
 		type: 'button',
@@ -245,8 +266,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	hold: {
+	}
+	presets['hold'] = {
 		name: 'Hold',
 		category: 'Show control',
 		type: 'button',
@@ -264,8 +285,8 @@ const PRESETS = {
 			},
 		],
 		feedbacks: [],
-	},
-	decrement_brightness: {
+	}
+	presets['decrement_brightness'] = {
 		name: 'Reduce master brightness',
 		category: 'Show control',
 		type: 'button',
@@ -298,8 +319,8 @@ const PRESETS = {
 				},
 			},
 		],
-	},
-	increment_brightness: {
+	}
+	presets['increment_brightness'] = {
 		name: 'Increase master brightness',
 		category: 'Show control',
 		type: 'button',
@@ -332,8 +353,8 @@ const PRESETS = {
 				},
 			},
 		],
-	},
-	decrement_volume: {
+	}
+	presets['decrement_volume'] = {
 		name: 'Reduce master volume',
 		category: 'Show control',
 		type: 'button',
@@ -366,8 +387,8 @@ const PRESETS = {
 				},
 			},
 		],
-	},
-	increment_volume: {
+	}
+	presets['increment_volume'] = {
 		name: 'Increase master volume',
 		category: 'Show control',
 		type: 'button',
@@ -400,9 +421,7 @@ const PRESETS = {
 				},
 			},
 		],
-	},
+	}
+	this.setPresetDefinitions(presets)
 }
 
-module.exports = {
-	PRESETS,
-}
