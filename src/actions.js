@@ -1,4 +1,5 @@
 const { Regex, combineRgb } = require('@companion-module/base')
+const utils = require('./utils')
 
 exports.initActions = function () {
 	let self = this
@@ -237,7 +238,7 @@ exports.initActions = function () {
 				const float = await this.parseVariablesInString(event.options.float)
 				const brightness = this.getVariableValue('brightness')
 				const new_brightness = utils.increment_float(brightness, float)
-				this.log('debug', `new_brightness === ${new_brightness}`)
+				// this.log('debug', `new_brightness === ${new_brightness}`)
 				const path = '/d3/showcontrol/brightness'
 				this.sendOscMessage(path, [
 					{
@@ -266,7 +267,7 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const brightness = this.getVariableValue('brightness')
 			const new_brightness = utils.decrement_float(brightness, float)
-			this.log('debug', `new_brightness === ${new_brightness}`)
+			// this.log('debug', `new_brightness === ${new_brightness}`)
 			const path = '/d3/showcontrol/brightness'
 			this.sendOscMessage(path, [
 				{
