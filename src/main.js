@@ -3,113 +3,35 @@ const UpgradeScripts = require('./upgrades')
 
 const osc_server = require('./osc_server.js')
 const choices = require('./choices')
-const presets = require('./presets')
 const utils = require('./utils')
+const presets = require('./presets')
+const feedbacks = require('./feedbacks')
 const variables = require('./variables')
 
 class disguiseOSCInstance extends InstanceBase {
-	
-
 	constructor(internal) {
 		super(internal)
 
 		Object.assign(this, {
 			...presets,
+			...feedbacks,
 			...variables,
 		})
 
 		this.updateStatus('Disconnected')
 	}
 
-	feedbacks = {
-		PlayMode: {
-			name: 'playmode',
-			type: 'boolean',
-			description: 'Blinks background if selected playmode is active',
-			defaultStyle: {
-				bgcolor: combineRgb(0, 0, 0),
-				color: combineRgb(0, 0, 0),
-			},
-			options: [
-				{
-					type: 'dropdown',
-					id: 'mode',
-					label: 'Playmode :',
-					default: '00',
-					choices: choices.PLAYMODE,
-				},
-			],
-			callback: (feedback) => {
-				if (this.PLAYMODE === feedback.options.mode && this.blink_button) {
-					return true
-				} else {
-					return false
-				}
-			},
-		},
-		Heartbeat: {
-			name: 'heartbeat',
-			type: 'boolean',
-			description: 'Blinks background if disguise heartbeat is detected',
-			defaultStyle: {
-				bgcolor: combineRgb(204, 0, 0),
-				color: combineRgb(0, 0, 0),
-			},
-			options: [],
-			callback: (feedback) => {
-				if (osc_server.lastHeartbeat != this.getVariableValue('heartbeat') && this.blink_button) {
-					return true
-				} else if (osc_server.lastHeartbeat === this.getVariableValue('heartbeat')) {
-					this.PLAYMODE = null
-					return false
-				}
-				osc_server.lastHeartbeat = this.getVariableValue('heartbeat')
-			},
-		},
-		Brightness: {
-			name: 'Master brightness',
-			type: 'boolean',
-			description: 'Blinks background if disguise master brightness is zero',
-			defaultStyle: {
-				bgcolor: combineRgb(204, 0, 0),
-				color: combineRgb(110, 110, 110),
-			},
-			options: [],
-			callback: (feedback) => {
-				if (this.getVariableValue('brightness') === '0.00' && this.blink_button) {
-					return true
-				}
-			},
-		},
-		Volume: {
-			name: 'Master volume',
-			type: 'boolean',
-			description: 'Blinks background if disguise master volume is zero',
-			defaultStyle: {
-				bgcolor: combineRgb(204, 0, 0),
-				color: combineRgb(110, 110, 110),
-			},
-			options: [],
-			callback: (feedback) => {
-				if (this.getVariableValue('volume') === '0.00' && this.blink_button) {
-					return true
-				}
-			},
-		},
-	}
-
 	async init(config, firstInit) {
-			let self = this
-	
-			this.config = config
-	
+		let self = this
+
+		this.config = config
+
 		osc_server.connect(this)
 		this.updateStatus('ok')
 		this.updateActions() // export actions
-		this.setFeedbackDefinitions(this.feedbacks)
-		// this.setPresetDefinitions(presets.PRESETS) // export feedbacks
-		
+
 		self.initPresets()
+		self.initFeedbacks()
 		self.initVariables()
 
 		this.blink_button = setInterval(() => {
