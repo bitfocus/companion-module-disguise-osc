@@ -1,4 +1,4 @@
-const { Regex, combineRgb } = require('@companion-module/base')
+const { Regex } = require('@companion-module/base')
 const utils = require('./utils')
 
 exports.initActions = function () {
@@ -8,6 +8,16 @@ exports.initActions = function () {
 	let showcontrol_base_address = '/d3/showcontrol/'
 	let layer_base_address = '/d3/layer/'
 
+	// utility actions
+	actions['shift'] = {
+		name: 'Shift',
+		options: [],
+		callback: (action) => {
+			utils.shift = !utils.shift
+			// this.log('debug', `utils.shift === ${utils.shift}`)
+			self.checkfeedbacks()
+		},
+	}
 	// showcontrol actions
 	actions['play'] = {
 		name: 'Play',
@@ -161,7 +171,7 @@ exports.initActions = function () {
 			])
 		},
 	}
-	;(actions['floatcue'] = {
+	actions['floatcue'] = {
 		name: 'Float cue',
 		options: [
 			{
@@ -191,63 +201,94 @@ exports.initActions = function () {
 				},
 			])
 		},
-	}),
-		(actions['fadeup'] = {
-			name: 'Fade up',
-			options: [],
-			callback: (action) => {
-				const path = '/d3/showcontrol/fadeup'
+	}
+	actions['fadeup'] = {
+		name: 'Fade up',
+		options: [],
+		callback: (action) => {
+			const path = '/d3/showcontrol/fadeup'
 
-				this.sendOscMessage(path, [])
-			},
-		}),
-		(actions['fadedown'] = {
-			name: 'Fade down',
-			options: [],
-			callback: (action) => {
-				const path = '/d3/showcontrol/fadedown'
+			this.sendOscMessage(path, [])
+		},
+	}
+	actions['fadedown'] = {
+		name: 'Fade down',
+		options: [],
+		callback: (action) => {
+			const path = '/d3/showcontrol/fadedown'
 
-				this.sendOscMessage(path, [])
-			},
-		}),
-		(actions['hold'] = {
-			name: 'Hold',
-			options: [],
-			callback: (action) => {
-				const path = '/d3/showcontrol/hold'
+			this.sendOscMessage(path, [])
+		},
+	}
+	actions['hold'] = {
+		name: 'Hold',
+		options: [],
+		callback: (action) => {
+			const path = '/d3/showcontrol/hold'
 
-				this.sendOscMessage(path, [])
+			this.sendOscMessage(path, [])
+		},
+	}
+	actions['shift_brightness'] = {
+		name: 'Shift aware brightness',
+		options: [
+			{
+				type: 'textinput',
+				label: 'Step (float)',
+				id: 'float',
+				default: 0.01,
+				max: 1,
+				min: 0,
+				step: 0.01,
+				regex: Regex.SIGNED_FLOAT,
+				useVariables: true,
 			},
-		}),
-		(actions['increment_brightness'] = {
-			name: 'Increase brightness',
-			options: [
+		],
+		callback: async (event) => {
+			const float = await this.parseVariablesInString(event.options.float)
+			const brightness = this.getVariableValue('brightness')
+
+			let new_brightness = utils.shift
+				? utils.decrement_float(brightness, float)
+				: utils.increment_float(brightness, float)
+
+			const path = '/d3/showcontrol/brightness'
+			this.sendOscMessage(path, [
 				{
-					type: 'textinput',
-					label: 'Step (float)',
-					id: 'float',
-					default: 0.01,
-					max: 1,
-					min: 0,
-					step: 0.01,
-					regex: Regex.SIGNED_FLOAT,
-					useVariables: true,
+					type: 'f',
+					value: parseFloat(new_brightness),
 				},
-			],
-			callback: async (event) => {
-				const float = await this.parseVariablesInString(event.options.float)
-				const brightness = this.getVariableValue('brightness')
-				const new_brightness = utils.increment_float(brightness, float)
-				// this.log('debug', `new_brightness === ${new_brightness}`)
-				const path = '/d3/showcontrol/brightness'
-				this.sendOscMessage(path, [
-					{
-						type: 'f',
-						value: parseFloat(new_brightness),
-					},
-				])
+			])
+		},
+	}
+	actions['increment_brightness'] = {
+		name: 'Increase brightness',
+		options: [
+			{
+				type: 'textinput',
+				label: 'Step (float)',
+				id: 'float',
+				default: 0.01,
+				max: 1,
+				min: 0,
+				step: 0.01,
+				regex: Regex.SIGNED_FLOAT,
+				useVariables: true,
 			},
-		})
+		],
+		callback: async (event) => {
+			const float = await this.parseVariablesInString(event.options.float)
+			const brightness = this.getVariableValue('brightness')
+			const new_brightness = utils.increment_float(brightness, float)
+			const path = '/d3/showcontrol/brightness'
+			this.sendOscMessage(path, [
+				{
+					type: 'f',
+					value: parseFloat(new_brightness),
+				},
+			])
+		},
+	}
 	actions['decrement_brightness'] = {
 		name: 'Decrease brightness',
 		options: [
@@ -273,6 +314,36 @@ exports.initActions = function () {
 				{
 					type: 'f',
 					value: parseFloat(new_brightness),
+				},
+			])
+		},
+	}
+	actions['shift_volume'] = {
+		name: 'Shift aware volume',
+		options: [
+			{
+				type: 'textinput',
+				label: 'Step (float)',
+				id: 'float',
+				default: 0.01,
+				max: 1,
+				min: 0,
+				step: 0.01,
+				regex: Regex.SIGNED_FLOAT,
+				useVariables: true,
+			},
+		],
+		callback: async (event) => {
+			const float = await this.parseVariablesInString(event.options.float)
+			const volume = this.getVariableValue('volume')
+
+			let new_volume = utils.shift ? utils.decrement_float(volume, float) : utils.increment_float(volume, float)
+
+			const path = '/d3/showcontrol/volume'
+			this.sendOscMessage(path, [
+				{
+					type: 'f',
+					value: parseFloat(new_volume),
 				},
 			])
 		},

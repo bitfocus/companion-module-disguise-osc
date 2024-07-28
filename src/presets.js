@@ -17,7 +17,12 @@ exports.initPresets = function () {
 			png64: fs.readFileSync(`${imageDir}/heartbeat.png`, 'base64'),
 			bgcolor: utils.MatteBlack,
 		},
-		steps: [],
+		steps: [
+			{
+				down: [{ actionId: 'shift' }],
+				up: [],
+			},
+		],
 		feedbacks: [
 			{
 				feedbackId: 'Heartbeat',
@@ -315,6 +320,7 @@ exports.initPresets = function () {
 			{
 				feedbackId: 'Brightness',
 				style: {
+					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
 				},
 			},
@@ -349,7 +355,65 @@ exports.initPresets = function () {
 			{
 				feedbackId: 'Brightness',
 				style: {
+					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
+				},
+			},
+		],
+	}
+	presets['brightness'] = {
+		name: 'Shift aware brightness',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: utils.Gainsboro,
+			text: '$(d3-osc:brightness)',
+			alignment: 'center:top',
+			size: '14',
+			bgcolor: utils.Gainsboro,
+			png64: fs.readFileSync(`${imageDir}/brightness.png`, 'base64'),
+		},
+		steps: [
+			{
+				down: [
+					{
+						actionId: 'shift_brightness',
+						options: {
+							float: '0.01',
+						},
+					},
+				],
+				up: [],
+			},
+		],
+		feedbacks: [
+			{
+				feedbackId: 'Brightness',
+				style: {
+					color: utils.FireBrick,
+					bgcolor: utils.FireBrick,
+				},
+			},
+			{
+				feedbackId: 'increase_brightness',
+				style: {
+					color: utils.Gainsboro,
+					text: '$(d3-osc:brightness)',
+					alignment: 'center:top',
+					size: '14',
+					bgcolor: utils.Gainsboro,
+					png64: fs.readFileSync(`${imageDir}/brightness_up.png`, 'base64'),
+				},
+			},
+			{
+				feedbackId: 'decrease_brightness',
+				style: {
+					color: utils.Gainsboro,
+					text: '$(d3-osc:brightness)',
+					alignment: 'center:top',
+					size: '14',
+					bgcolor: utils.Gainsboro,
+					png64: fs.readFileSync(`${imageDir}/brightness_down.png`, 'base64'),
 				},
 			},
 		],
@@ -383,6 +447,7 @@ exports.initPresets = function () {
 			{
 				feedbackId: 'Volume',
 				style: {
+					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
 				},
 			},
@@ -417,11 +482,68 @@ exports.initPresets = function () {
 			{
 				feedbackId: 'Volume',
 				style: {
+					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
+				},
+			},
+		],
+	}
+	presets['volume'] = {
+		name: 'Shift aware volume',
+		category: 'Show control',
+		type: 'button',
+		style: {
+			color: utils.Gainsboro,
+			text: '$(d3-osc:volume)',
+			alignment: 'center:top',
+			size: '14',
+			bgcolor: utils.Gainsboro,
+			png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
+		},
+		steps: [
+			{
+				down: [
+					{
+						actionId: 'shift_volume',
+						options: {
+							float: '0.01',
+						},
+					},
+				],
+				up: [],
+			},
+		],
+		feedbacks: [
+			{
+				feedbackId: 'Volume',
+				style: {
+					color: utils.FireBrick,
+					bgcolor: utils.FireBrick,
+				},
+			},
+			{
+				feedbackId: 'increase_volume',
+				style: {
+					color: utils.Gainsboro,
+					text: '$(d3-osc:volume)',
+					alignment: 'center:top',
+					size: '14',
+					bgcolor: utils.Gainsboro,
+					png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
+				},
+			},
+			{
+				feedbackId: 'decrease_volume',
+				style: {
+					color: utils.Gainsboro,
+					text: '$(d3-osc:volume)',
+					alignment: 'center:top',
+					size: '14',
+					bgcolor: utils.Gainsboro,
+					png64: fs.readFileSync(`${imageDir}/volume_down.png`, 'base64'),
 				},
 			},
 		],
 	}
 	this.setPresetDefinitions(presets)
 }
-
