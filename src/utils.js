@@ -6,6 +6,9 @@ const {
 } = require('@companion-module/base')
 
 const utils = {
+	// boolean to assist with changing numeric values in both directions on a single button
+	shift: false,
+	
 	// disguise master brightness and volume limits
 	max_value: 1.0,
 	min_value: 0.0,
