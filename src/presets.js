@@ -498,7 +498,7 @@ exports.initPresets = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
+			png64: fs.readFileSync(`${imageDir}/volume.png`, 'base64'),
 		},
 		steps: [
 			{
