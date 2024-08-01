@@ -14,7 +14,6 @@ exports.initActions = function () {
 		options: [],
 		callback: (action) => {
 			utils.shift = !utils.shift
-			// this.log('debug', `utils.shift === ${utils.shift}`)
 			self.checkfeedbacks()
 		},
 	}
@@ -308,7 +307,6 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const brightness = this.getVariableValue('brightness')
 			const new_brightness = utils.decrement_float(brightness, float)
-			// this.log('debug', `new_brightness === ${new_brightness}`)
 			const path = '/d3/showcontrol/brightness'
 			this.sendOscMessage(path, [
 				{
@@ -367,7 +365,6 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const volume = this.getVariableValue('volume')
 			const new_volume = utils.increment_float(volume, float)
-			// this.log('debug', `new_volume === ${new_volume}`)
 			const path = '/d3/showcontrol/volume'
 			this.sendOscMessage(path, [
 				{
@@ -396,7 +393,6 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const volume = this.getVariableValue('volume')
 			const new_volume = utils.decrement_float(volume, float)
-			// this.log('debug', `new_volume === ${new_volume}`)
 			const path = '/d3/showcontrol/volume'
 			this.sendOscMessage(path, [
 				{
