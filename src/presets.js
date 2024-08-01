@@ -388,13 +388,6 @@ exports.initPresets = function () {
 		],
 		feedbacks: [
 			{
-				feedbackId: 'Brightness',
-				style: {
-					color: utils.FireBrick,
-					bgcolor: utils.FireBrick,
-				},
-			},
-			{
 				feedbackId: 'increase_brightness',
 				style: {
 					color: utils.Gainsboro,
@@ -414,6 +407,13 @@ exports.initPresets = function () {
 					size: '14',
 					bgcolor: utils.Gainsboro,
 					png64: fs.readFileSync(`${imageDir}/brightness_down.png`, 'base64'),
+				},
+			},
+			{
+				feedbackId: 'Brightness',
+				style: {
+					color: utils.FireBrick,
+					bgcolor: utils.FireBrick,
 				},
 			},
 		],
@@ -515,13 +515,6 @@ exports.initPresets = function () {
 		],
 		feedbacks: [
 			{
-				feedbackId: 'Volume',
-				style: {
-					color: utils.FireBrick,
-					bgcolor: utils.FireBrick,
-				},
-			},
-			{
 				feedbackId: 'increase_volume',
 				style: {
 					color: utils.Gainsboro,
@@ -541,6 +534,13 @@ exports.initPresets = function () {
 					size: '14',
 					bgcolor: utils.Gainsboro,
 					png64: fs.readFileSync(`${imageDir}/volume_down.png`, 'base64'),
+				},
+			},
+			{
+				feedbackId: 'Volume',
+				style: {
+					color: utils.FireBrick,
+					bgcolor: utils.FireBrick,
 				},
 			},
 		],
