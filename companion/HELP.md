@@ -106,7 +106,7 @@ Full functionality is only available if the disguise is configured to <i>always 
 **NOTES**
 
 1. Toggle shift inverts a boolean variable not available to the user. It provides increased functionality to shift aware actions, presets and feedbacks.
-2. If shift is <i>false</i> shift aware volume / brightness decrement the linked value by the user provided step value. If shift is <i>true</i> shift aware volume / brightness increment the linked value by the user provided step value.
-3. The heartbeat preset includes the toggle shift action. Each timne the button is pressed shift will invert.
-4. Shift aware volume / brightness presets allow chnages to be made in both directions depending on the value of the shift variable
-5. increase (or decrease) volume ( or brightness) feedbacks change the png on the button to indicate if the shift variable state is set to allow increase or decrease to volume and brightness
+2. If shift is <i>false</i> shift aware volume / brightness decrement the linked value by the user provided step value. If shift is <i>true</i> shift aware volume/brightness increment the linked value by the user provided step value.
+3. The heartbeat preset includes the toggle shift action. Each time the button is pressed shift will invert.
+4. Shift aware volume/brightness presets allow chnages to be made in both directions depending on the value of the shift variable
+5. increase (or decrease) volume (or brightness) feedbacks change the png on the button to indicate if the shift variable state is set to allow increase or decrease to volume and brightness
