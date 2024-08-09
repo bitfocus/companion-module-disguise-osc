@@ -10,7 +10,7 @@ exports.initActions = function () {
 
 	// utility actions
 	actions['shift'] = {
-		name: 'Shift',
+		name: 'Toggle shift',
 		options: [],
 		callback: (action) => {
 			utils.shift = !utils.shift
