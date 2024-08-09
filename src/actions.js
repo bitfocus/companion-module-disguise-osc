@@ -22,7 +22,7 @@ exports.initActions = function () {
 		name: 'Play',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/play'
+			const path = `${showcontrol_base_address}play`
 
 			this.sendOscMessage(path, [])
 		},
@@ -31,7 +31,7 @@ exports.initActions = function () {
 		name: 'Play to end of section',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/playsection'
+			const path = `${showcontrol_base_address}playsection`
 
 			this.sendOscMessage(path, [])
 		},
@@ -40,7 +40,7 @@ exports.initActions = function () {
 		name: 'Loop section',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/loop'
+			const path = `${showcontrol_base_address}loop`
 
 			this.sendOscMessage(path, [])
 		},
@@ -49,7 +49,7 @@ exports.initActions = function () {
 		name: 'Stop',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/stop'
+			const path = `${showcontrol_base_address}stop`
 
 			this.sendOscMessage(path, [])
 		},
@@ -58,7 +58,7 @@ exports.initActions = function () {
 		name: 'Previous section',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/previoussection'
+			const path = `${showcontrol_base_address}previoussection`
 
 			this.sendOscMessage(path, [])
 		},
@@ -67,7 +67,7 @@ exports.initActions = function () {
 		name: 'Next section',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/nextsection'
+			const path = `${showcontrol_base_address}nextsection`
 
 			this.sendOscMessage(path, [])
 		},
@@ -76,7 +76,7 @@ exports.initActions = function () {
 		name: 'Return to start',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/returntostart'
+			const path = `${showcontrol_base_address}returntostart`
 
 			this.sendOscMessage(path, [])
 		},
@@ -85,7 +85,7 @@ exports.initActions = function () {
 		name: 'Previous track',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/previoustrack'
+			const path = `${showcontrol_base_address}previoustrack`
 
 			this.sendOscMessage(path, [])
 		},
@@ -94,7 +94,7 @@ exports.initActions = function () {
 		name: 'Next track',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/nexttrack'
+			const path = `${showcontrol_base_address}nexttrack`
 
 			this.sendOscMessage(path, [])
 		},
@@ -111,7 +111,7 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const path = '/d3/showcontrol/trackname'
+			const path = `${showcontrol_base_address}trackname`
 			const string = await this.parseVariablesInString(event.options.string)
 
 			this.sendOscMessage(path, [
@@ -135,7 +135,7 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const path = '/d3/showcontrol/trackid'
+			const path = `${showcontrol_base_address}trackid`
 			const int = await this.parseVariablesInString(event.options.int)
 
 			this.sendOscMessage(path, [
@@ -159,7 +159,7 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const path = '/d3/showcontrol/cue'
+			const path = `${showcontrol_base_address}cue`
 			const int = await this.parseVariablesInString(event.options.int)
 
 			this.sendOscMessage(path, [
@@ -190,7 +190,7 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const path = '/d3/showcontrol/floatcue'
+			const path = `${showcontrol_base_address}floatcue`
 			const float = await this.parseVariablesInString(event.options.float)
 
 			this.sendOscMessage(path, [
@@ -205,7 +205,7 @@ exports.initActions = function () {
 		name: 'Fade up',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/fadeup'
+			const path = `${showcontrol_base_address}fadeup`
 
 			this.sendOscMessage(path, [])
 		},
@@ -214,7 +214,7 @@ exports.initActions = function () {
 		name: 'Fade down',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/fadedown'
+			const path = `${showcontrol_base_address}fadedown`
 
 			this.sendOscMessage(path, [])
 		},
@@ -223,7 +223,7 @@ exports.initActions = function () {
 		name: 'Hold',
 		options: [],
 		callback: (action) => {
-			const path = '/d3/showcontrol/hold'
+			const path = `${showcontrol_base_address}hold`
 
 			this.sendOscMessage(path, [])
 		},
@@ -251,7 +251,7 @@ exports.initActions = function () {
 				? utils.decrement_float(brightness, float)
 				: utils.increment_float(brightness, float)
 
-			const path = '/d3/showcontrol/brightness'
+			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -279,7 +279,7 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const brightness = this.getVariableValue('brightness')
 			const new_brightness = utils.increment_float(brightness, float)
-			const path = '/d3/showcontrol/brightness'
+			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -307,7 +307,7 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const brightness = this.getVariableValue('brightness')
 			const new_brightness = utils.decrement_float(brightness, float)
-			const path = '/d3/showcontrol/brightness'
+			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -337,7 +337,7 @@ exports.initActions = function () {
 
 			let new_volume = utils.shift ? utils.decrement_float(volume, float) : utils.increment_float(volume, float)
 
-			const path = '/d3/showcontrol/volume'
+			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -365,7 +365,7 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const volume = this.getVariableValue('volume')
 			const new_volume = utils.increment_float(volume, float)
-			const path = '/d3/showcontrol/volume'
+			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -393,7 +393,7 @@ exports.initActions = function () {
 			const float = await this.parseVariablesInString(event.options.float)
 			const volume = this.getVariableValue('volume')
 			const new_volume = utils.decrement_float(volume, float)
-			const path = '/d3/showcontrol/volume'
+			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
