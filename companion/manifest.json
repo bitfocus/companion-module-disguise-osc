@@ -2,7 +2,7 @@
 	"id": "disguise-osc",
 	"name": "disguise-osc",
 	"shortname": "d3-osc",
-	"description": "Direct: OSC plugin for Companion",
+	"description": "Provides osc controls/feedbacks for disguise servers",
 	"version": "2.0.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-disguise.git",
