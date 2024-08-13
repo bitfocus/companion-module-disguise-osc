@@ -9,7 +9,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bitfocus/companion-module-generic-osc.git"
+		"url": "git+https://github.com/bitfocus/companion-module-diguise.git"
 	},
 	"dependencies": {
 		"@companion-module/base": "~1.8.0",
