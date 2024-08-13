@@ -6,3 +6,4 @@ package-lock.json
 osc-layer-personality.txt
 DEBUG-PACKAGED
 build-config.cjs
+yarn.lock
