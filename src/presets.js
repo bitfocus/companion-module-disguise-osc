@@ -3,7 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 
 // Path to button image directory
-const imageDir = path.join(__dirname, 'images')
+const imageDir = path.join(__dirname, '')
 
 exports.initPresets = function () {
 	let presets = {}

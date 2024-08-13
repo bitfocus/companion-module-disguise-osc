@@ -11,7 +11,8 @@ const variables = require('./variables')
 
 class disguiseOSCInstance extends InstanceBase {
 	constructor(internal) {
-		super(internal)
+		
+				super(internal)
 
 		Object.assign(this, {
 			...actions,
