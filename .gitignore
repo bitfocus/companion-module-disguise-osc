@@ -4,3 +4,5 @@ package-lock.json
 /pkg.tgz
 .DS_Store
 osc-layer-personality.txt
+DEBUG-PACKAGED
+build-config.cjs
