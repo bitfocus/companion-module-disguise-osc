@@ -5,7 +5,7 @@ const path = require('path')
 const utils = require('./utils')
 
 // Path to button image directory
-const imageDir = path.join(__dirname, '')
+const imageDir = path.join(__dirname, '/images')
 
 exports.initFeedbacks = function () {
 	let self = this
