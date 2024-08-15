@@ -2,21 +2,26 @@
 	"name": "disguise-osc",
 	"version": "2.0.0",
 	"main": "src/main.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"format": "prettier -w ."
-	},
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bitfocus/companion-module-diguise.git"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.8.0",
-		"osc": "^2.4.3"
+		"@companion-module/base": "~1.9.0",
+		"osc": "^2.4.4"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.4.1"
+		"@companion-module/tools": "^1.4.1",
+		"cz-conventional-changelog": "^3.3.0"
 	},
-	"prettier": "@companion-module/tools/.prettierrc.json"
+	"scripts": {
+		"format": "prettier -w ."
+	},
+	"prettier": "@companion-module/tools/.prettierrc.json",
+	"config": {
+		"commitizen": {
+			"path": "./node_modules/cz-conventional-changelog"
+		}
+	}
 }
