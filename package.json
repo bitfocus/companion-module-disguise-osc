@@ -12,16 +12,10 @@
 		"osc": "^2.4.4"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.4.1",
-		"cz-conventional-changelog": "^3.3.0"
+		"@companion-module/tools": "^1.4.1"
 	},
 	"scripts": {
 		"format": "prettier -w ."
 	},
-	"prettier": "@companion-module/tools/.prettierrc.json",
-	"config": {
-		"commitizen": {
-			"path": "./node_modules/cz-conventional-changelog"
-		}
-	}
+	"prettier": "@companion-module/tools/.prettierrc.json"
 }

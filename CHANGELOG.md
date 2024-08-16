@@ -6,20 +6,20 @@ All notable changes to this project will be documented in this file. Dates are d
 
 ### Added
 
-- Show control input action : ```Float cue```
+- Show control input action : `Float cue`
 - Video layer input actions : `blendmode`, `brightness`, `tint`, `speed`, `mode`, `at end point`, `transition_time`, `volume`, `brightness (shift)`, `contrast (scale)`, `saturation scale`
 - Variables : `current section time elapsed`, `current section time remaining`, `timecode position`, `timecode position hours`, `timecode position minutes`, `timecode position seconds`, `timecode position frames`
 - Presets :
   - `increase master volume`, `decrease master volume`,`increase master brightness`, `decrease master brightness` standalone presets to change master volume and brightness - for more fluid use adding internal actions to repeat the button press with a delay (this button, force if pressed) on press and abort all delayed actions (this button) on release is recommended
-  - ```heartbeat / toggle shift``` blinks if messages are being received from disguise. A press action toggles a private boolean which alternates ```shift aware volume``` and ```shift aware brightness``` actions between increasing and decreasing behaviour
+  - `heartbeat / toggle shift` blinks if messages are being received from disguise. A press action toggles a private boolean which alternates `shift aware volume` and `shift aware brightness` actions between increasing and decreasing behaviour
 - Feedbacks :
-    - ```heartbeat``` blinks button background if the value of heartbeat variable continues to change 
-    - ```increase volume``` changes the button png to indicate if shift aware volume action will increase volume
-    - ```decrease volume``` changes the button png to indicate if shift aware volume action will decrease volume
-    - ```master volume = 0``` blinks button background if master volume is 0
-    - ```increase brightness``` changes the button png to indicate if shift aware brightness action will increase brightness
-    - ```decrease brightness``` changes the button png to indicate if shift aware brightness action will decrease brightness
-    - ```master brightness = 0``` blinks button background if master brightness is 0
+  - `heartbeat` blinks button background if the value of heartbeat variable continues to change
+  - `increase volume` changes the button png to indicate if shift aware volume action will increase volume
+  - `decrease volume` changes the button png to indicate if shift aware volume action will decrease volume
+  - `master volume = 0` blinks button background if master volume is 0
+  - `increase brightness` changes the button png to indicate if shift aware brightness action will increase brightness
+  - `decrease brightness` changes the button png to indicate if shift aware brightness action will decrease brightness
+  - `master brightness = 0` blinks button background if master brightness is 0
 
 ### Changed
 
@@ -34,4 +34,4 @@ All notable changes to this project will be documented in this file. Dates are d
 
 ### Removed
 
-- Feedback presets hav gone (for now) - will (probably) look at implementing them again in future releases
+- Feedback presets have gone (for now) - will (probably) look at implementing them again in future releases
