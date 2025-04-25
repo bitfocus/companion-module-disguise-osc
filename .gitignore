@@ -1,0 +1,10 @@
+node_modules/
+package-lock.json
+/pkg
+/pkg.tgz
+.DS_Store
+osc-layer-personality.txt
+DEBUG-PACKAGED
+build-config.cjs
+.vscode/settings.json
+yarn.lock

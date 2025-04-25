@@ -1,0 +1,26 @@
+{
+	"id": "disguise-osc",
+	"name": "disguise-osc",
+	"shortname": "d3-osc",
+	"description": "Provides osc controls/feedbacks for disguise servers",
+	"version": "2.0.0",
+	"license": "MIT",
+	"repository": "git+https://github.com/bitfocus/companion-module-disguise.git",
+	"bugs": "https://github.com/bitfocus/companion-module-disguise/issues",
+	"maintainers": [
+		{
+			"name": "William Viker",
+			"email": "william@bitfocus.io"
+		}
+	],
+	"legacyIds": ["direct_osc", "osc"],
+	"runtime": {
+		"type": "node18",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.0",
+		"entrypoint": "../src/main.js"
+	},
+	"manufacturer": "Disguise",
+	"products": ["OSC"],
+	"keywords": ["Protocol", "Disguise"]
+}
