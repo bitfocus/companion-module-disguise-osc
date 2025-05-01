@@ -13,7 +13,7 @@
 			"email": "william@bitfocus.io"
 		}
 	],
-	"legacyIds": [],
+	"legacyIds": ["disguise"],
 	"runtime": {
 		"type": "node18",
 		"api": "nodejs-ipc",
