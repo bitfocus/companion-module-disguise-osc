@@ -3,8 +3,6 @@ const osc_server = require('./osc_server.js')
 const utils = require('./utils')
 const icons = require('./icons')
 
-
-
 exports.initFeedbacks = function () {
 	let self = this
 	let feedbacks = {}

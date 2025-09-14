@@ -1,5 +1,5 @@
 const utils = require('./utils')
-const icons  = require('./icons')
+const icons = require('./icons')
 
 exports.initPresets = function () {
 	let presets = {}
