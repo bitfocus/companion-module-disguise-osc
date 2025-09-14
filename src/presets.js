@@ -1,9 +1,5 @@
-const fs = require('fs')
-const path = require('path')
 const utils = require('./utils')
-
-// Path to button image directory
-const imageDir = path.join(__dirname, '/images')
+const icons  = require('./icons')
 
 exports.initPresets = function () {
 	let presets = {}
@@ -14,7 +10,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/heartbeat.png`, 'base64'),
+			png64: icons.heartbeat,
 			bgcolor: utils.MatteBlack,
 		},
 		steps: [
@@ -38,7 +34,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/play.png`, 'base64'),
+			png64: icons.play,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -65,7 +61,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/playToEndOfSection.png`, 'base64'),
+			png64: icons.playToEndofSection,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -101,7 +97,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/loop.png`, 'base64'),
+			png64: icons.loop,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -128,7 +124,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/stop.png`, 'base64'),
+			png64: icons.stop,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -155,7 +151,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/prevSection.png`, 'base64'),
+			png64: icons.prevSection,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -172,7 +168,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/nextSection.png`, 'base64'),
+			png64: icons.nextSection,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -189,7 +185,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/backToStart.png`, 'base64'),
+			png64: icons.backToStart,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -206,7 +202,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/prevTrack.png`, 'base64'),
+			png64: icons.prevTrack,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -223,7 +219,7 @@ exports.initPresets = function () {
 		type: 'button',
 		style: {
 			color: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/nextTrack.png`, 'base64'),
+			png64: icons.nextTrack,
 			bgcolor: utils.Gainsboro,
 		},
 		steps: [
@@ -241,7 +237,7 @@ exports.initPresets = function () {
 		style: {
 			color: utils.Gainsboro,
 			text: 'fade\ndown',
-			png64: fs.readFileSync(`${imageDir}/empty.png`, 'base64'),
+			png64: icons.empty,
 			size: '18',
 			bgcolor: utils.MatteBlack,
 		},
@@ -260,7 +256,7 @@ exports.initPresets = function () {
 		style: {
 			color: utils.Gainsboro,
 			text: 'fade\nup',
-			png64: fs.readFileSync(`${imageDir}/empty.png`, 'base64'),
+			png64: icons.empty,
 			size: '18',
 			bgcolor: utils.MatteBlack,
 		},
@@ -279,7 +275,7 @@ exports.initPresets = function () {
 		style: {
 			color: utils.Gainsboro,
 			text: 'hold',
-			png64: fs.readFileSync(`${imageDir}/empty.png`, 'base64'),
+			png64: icons.empty,
 			size: '18',
 			bgcolor: utils.MatteBlack,
 		},
@@ -301,7 +297,7 @@ exports.initPresets = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/brightness_down.png`, 'base64'),
+			png64: icons.brightness_down,
 		},
 		steps: [
 			{
@@ -336,7 +332,7 @@ exports.initPresets = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/brightness_up.png`, 'base64'),
+			png64: icons.brightness_up,
 		},
 		steps: [
 			{
@@ -371,7 +367,7 @@ exports.initPresets = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/brightness.png`, 'base64'),
+			png64: icons.brightness,
 		},
 		steps: [
 			{
@@ -395,7 +391,7 @@ exports.initPresets = function () {
 					alignment: 'center:top',
 					size: '14',
 					bgcolor: utils.Gainsboro,
-					png64: fs.readFileSync(`${imageDir}/brightness_up.png`, 'base64'),
+					png64: icons.brightness_up,
 				},
 			},
 			{
@@ -406,7 +402,7 @@ exports.initPresets = function () {
 					alignment: 'center:top',
 					size: '14',
 					bgcolor: utils.Gainsboro,
-					png64: fs.readFileSync(`${imageDir}/brightness_down.png`, 'base64'),
+					png64: icons.brightness_down,
 				},
 			},
 			{
@@ -428,7 +424,7 @@ exports.initPresets = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/volume_down.png`, 'base64'),
+			png64: icons.volume_down,
 		},
 		steps: [
 			{
@@ -463,7 +459,7 @@ exports.initPresets = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
+			png64: icons.volume_up,
 		},
 		steps: [
 			{
@@ -498,7 +494,7 @@ exports.initPresets = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/volume.png`, 'base64'),
+			png64: icons.volume,
 		},
 		steps: [
 			{
@@ -522,7 +518,7 @@ exports.initPresets = function () {
 					alignment: 'center:top',
 					size: '14',
 					bgcolor: utils.Gainsboro,
-					png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
+					png64: icons.volume_up,
 				},
 			},
 			{
@@ -533,7 +529,7 @@ exports.initPresets = function () {
 					alignment: 'center:top',
 					size: '14',
 					bgcolor: utils.Gainsboro,
-					png64: fs.readFileSync(`${imageDir}/volume_down.png`, 'base64'),
+					png64: icons.volume_down,
 				},
 			},
 			{
