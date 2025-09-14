@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### 2.0.3 (2025-09-17)
+
+### Fixed
+
+- Module crashing while trying to load icons
+
 #### 2.0.0 (2024-8-14)
 
 ### Added
