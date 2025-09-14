@@ -1,11 +1,7 @@
 const { combineRgb } = require('@companion-module/base')
 const osc_server = require('./osc_server.js')
-const fs = require('fs')
-const path = require('path')
 const utils = require('./utils')
-
-// Path to button image directory
-const imageDir = path.join(__dirname, '/images')
+const icons = require('./icons')
 
 exports.initFeedbacks = function () {
 	let self = this
@@ -21,7 +17,7 @@ exports.initFeedbacks = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/brightness_down.png`, 'base64'),
+			png64: icons.brightness_down,
 		},
 		options: [],
 		callback: (feedback) => {
@@ -40,7 +36,7 @@ exports.initFeedbacks = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/brightness_up.png`, 'base64'),
+			png64: icons.brightness_up,
 		},
 		options: [],
 		callback: (feedback) => {
@@ -59,7 +55,7 @@ exports.initFeedbacks = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/volume_down.png`, 'base64'),
+			png64: icons.volume_down,
 		},
 		options: [],
 		callback: (feedback) => {
@@ -78,7 +74,7 @@ exports.initFeedbacks = function () {
 			alignment: 'center:top',
 			size: '14',
 			bgcolor: utils.Gainsboro,
-			png64: fs.readFileSync(`${imageDir}/volume_up.png`, 'base64'),
+			png64: icons.volume_up,
 		},
 		options: [],
 		callback: (feedback) => {
