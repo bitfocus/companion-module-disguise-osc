@@ -1,7 +1,7 @@
 const { InstanceBase, Regex, runEntrypoint } = require('@companion-module/base')
 const UpgradeScripts = require('./upgrades')
 
-const osc_server = require('./osc_server.js')
+const osc_server = require('./osc_server')
 const actions = require('./actions')
 const presets = require('./presets')
 const feedbacks = require('./feedbacks')
