@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### 2.0.3 (2025-09-17)
+#### 2.0.4 (2025-09-15)
+
+### Fixed
+
+- Dropdown choices not populating correctly
+- Ensure compatibility for Companion v4.0.x releases
+- Some boolean feedbacks never returning false
+
+#### 2.0.3 (2025-09-14)
 
 ### Fixed
 
