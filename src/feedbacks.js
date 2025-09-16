@@ -22,6 +22,8 @@ exports.initFeedbacks = function () {
 		callback: () => {
 			if (utils.shift === true) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -41,6 +43,8 @@ exports.initFeedbacks = function () {
 		callback: () => {
 			if (utils.shift === false) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -60,6 +64,8 @@ exports.initFeedbacks = function () {
 		callback: () => {
 			if (utils.shift === true) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -79,6 +85,8 @@ exports.initFeedbacks = function () {
 		callback: () => {
 			if (utils.shift === false) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -136,6 +144,8 @@ exports.initFeedbacks = function () {
 		callback: () => {
 			if (this.getVariableValue('brightness') === '0.00' && this.blink_button) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -151,6 +161,8 @@ exports.initFeedbacks = function () {
 		callback: () => {
 			if (this.getVariableValue('volume') === '0.00' && this.blink_button) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
