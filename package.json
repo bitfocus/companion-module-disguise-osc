@@ -7,16 +7,21 @@
 		"type": "git",
 		"url": "git+https://github.com/bitfocus/companion-module-diguise.git"
 	},
+	"scripts": {
+		"format": "prettier -w .",
+		"package": "companion-module-build",
+		"lint:raw": "eslint",
+		"lint": "yarn lint:raw ."
+	},
 	"dependencies": {
-		"@companion-module/base": "^1.11.3",
-		"osc": "^2.4.4"
+		"@companion-module/base": "~1.11.3",
+		"osc": "^2.4.5"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.4.1"
-	},
-	"scripts": {
-		"format": "prettier -w ."
+		"@companion-module/tools": "^2.4.0",
+		"eslint": "^9.35.0",
+		"prettier": "^3.6.2"
 	},
 	"prettier": "@companion-module/tools/.prettierrc.json",
-	"packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+	"packageManager": "yarn@4.9.4"
 }
