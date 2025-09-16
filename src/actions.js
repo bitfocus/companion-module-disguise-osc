@@ -6,8 +6,8 @@ exports.initActions = function () {
 	let self = this
 	let actions = {}
 
-	let showcontrol_base_address = '/d3/showcontrol/'
-	let layer_base_address = '/d3/layer/'
+	const showcontrol_base_address = '/d3/showcontrol/'
+	const layer_base_address = '/d3/layer/'
 
 	// utility actions
 	actions['shift'] = {

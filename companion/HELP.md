@@ -1,8 +1,8 @@
-## disguise OSC
+## Disguise OSC
 
 This module provides default OSC controls to the d3/disguise server. Setup OSC transport within d3/disguise.
 
-:warning: Full functionality is only available if the disguise is configured to _always send_ osc feedback
+Warning: Full functionality is only available if the disguise is configured to _always send_ osc feedback
 
 **ACTIONS**
 
