@@ -1,4 +1,4 @@
-const osc_server = require('./osc_server.js')
+const osc_server = require('./osc_server')
 const choices = require('./choices')
 const utils = require('./utils')
 const icons = require('./icons')
