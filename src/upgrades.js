@@ -1,6 +1,7 @@
 module.exports = [
+	//eslint-disable-next-line no-unused-vars
 	function (context, props) {
-		// This is a placeholder than now cannot be used/removed
+		// This placeholder was committed at one point, so it has to stay now.
 		return {
 			updatedConfig: null,
 			updatedActions: [],

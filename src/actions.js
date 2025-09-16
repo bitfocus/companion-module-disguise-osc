@@ -1,18 +1,19 @@
 const { Regex } = require('@companion-module/base')
+const choices = require('./choices')
 const utils = require('./utils')
 
 exports.initActions = function () {
 	let self = this
 	let actions = {}
 
-	let showcontrol_base_address = '/d3/showcontrol/'
-	let layer_base_address = '/d3/layer/'
+	const showcontrol_base_address = '/d3/showcontrol/'
+	const layer_base_address = '/d3/layer/'
 
 	// utility actions
 	actions['shift'] = {
 		name: 'Toggle shift',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			utils.shift = !utils.shift
 			self.checkfeedbacks()
 		},
@@ -21,7 +22,7 @@ exports.initActions = function () {
 	actions['play'] = {
 		name: 'Play',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}play`
 
 			this.sendOscMessage(path, [])
@@ -30,7 +31,7 @@ exports.initActions = function () {
 	actions['playsection'] = {
 		name: 'Play to end of section',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}playsection`
 
 			this.sendOscMessage(path, [])
@@ -39,7 +40,7 @@ exports.initActions = function () {
 	actions['loopsection'] = {
 		name: 'Loop section',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}loop`
 
 			this.sendOscMessage(path, [])
@@ -48,7 +49,7 @@ exports.initActions = function () {
 	actions['stop'] = {
 		name: 'Stop',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}stop`
 
 			this.sendOscMessage(path, [])
@@ -57,7 +58,7 @@ exports.initActions = function () {
 	actions['previoussection'] = {
 		name: 'Previous section',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}previoussection`
 
 			this.sendOscMessage(path, [])
@@ -66,7 +67,7 @@ exports.initActions = function () {
 	actions['nextsection'] = {
 		name: 'Next section',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}nextsection`
 
 			this.sendOscMessage(path, [])
@@ -75,7 +76,7 @@ exports.initActions = function () {
 	actions['returntostart'] = {
 		name: 'Return to start',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}returntostart`
 
 			this.sendOscMessage(path, [])
@@ -84,7 +85,7 @@ exports.initActions = function () {
 	actions['previoustrack'] = {
 		name: 'Previous track',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}previoustrack`
 
 			this.sendOscMessage(path, [])
@@ -93,7 +94,7 @@ exports.initActions = function () {
 	actions['nexttrack'] = {
 		name: 'Next track',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}nexttrack`
 
 			this.sendOscMessage(path, [])
@@ -204,7 +205,7 @@ exports.initActions = function () {
 	actions['fadeup'] = {
 		name: 'Fade up',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}fadeup`
 
 			this.sendOscMessage(path, [])
@@ -213,7 +214,7 @@ exports.initActions = function () {
 	actions['fadedown'] = {
 		name: 'Fade down',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}fadedown`
 
 			this.sendOscMessage(path, [])
@@ -222,7 +223,7 @@ exports.initActions = function () {
 	actions['hold'] = {
 		name: 'Hold',
 		options: [],
-		callback: (action) => {
+		callback: () => {
 			const path = `${showcontrol_base_address}hold`
 
 			this.sendOscMessage(path, [])
@@ -408,14 +409,14 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
@@ -423,7 +424,7 @@ exports.initActions = function () {
 			{
 				type: 'dropdown',
 				id: 'mode',
-				label: 'Blendmode :',
+				label: 'Blendmode:',
 				default: '00',
 				choices: choices.BLENDMODE,
 			},
@@ -447,14 +448,14 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
@@ -488,14 +489,14 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
@@ -503,7 +504,7 @@ exports.initActions = function () {
 			{
 				type: 'dropdown',
 				id: 'channel',
-				label: 'Channel :',
+				label: 'Channel:',
 				default: 'r',
 				choices: choices.TINT,
 			},
@@ -538,14 +539,14 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
@@ -579,14 +580,14 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
@@ -594,7 +595,7 @@ exports.initActions = function () {
 			{
 				type: 'dropdown',
 				id: 'int',
-				label: 'Mode :',
+				label: 'Mode:',
 				default: '1',
 				choices: choices.MODE,
 			},
@@ -602,7 +603,6 @@ exports.initActions = function () {
 		callback: async (event) => {
 			const base_address = await this.parseVariablesInString(event.options.base_address)
 			const layer = await this.parseVariablesInString(event.options.layer_name)
-			const channel = await this.parseVariablesInString(event.options.channel)
 			const path = `${base_address}${layer}/mode`
 			const int = await this.parseVariablesInString(event.options.int)
 			this.sendOscMessage(path, [
@@ -618,14 +618,14 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
@@ -633,7 +633,7 @@ exports.initActions = function () {
 			{
 				type: 'dropdown',
 				id: 'int',
-				label: 'At end point :',
+				label: 'At end point:',
 				default: '0',
 				choices: choices.AT_END_POINT,
 			},
@@ -641,7 +641,6 @@ exports.initActions = function () {
 		callback: async (event) => {
 			const base_address = await this.parseVariablesInString(event.options.base_address)
 			const layer = await this.parseVariablesInString(event.options.layer_name)
-			const channel = await this.parseVariablesInString(event.options.channel)
 			const path = `${base_address}${layer}/at_end_point`
 			const int = await this.parseVariablesInString(event.options.int)
 			this.sendOscMessage(path, [
@@ -657,21 +656,21 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
 			},
 			{
 				type: 'number',
-				label: 'Transition time (int) :',
+				label: 'Transition time (int):',
 				id: 'int',
 				default: 0,
 				max: 10,
@@ -698,21 +697,21 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
 			},
 			{
 				type: 'number',
-				label: 'Volume (float) :',
+				label: 'Volume (float):',
 				id: 'float',
 				default: 1,
 				max: 1,
@@ -740,21 +739,21 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
 			},
 			{
 				type: 'number',
-				label: 'Brightness (shift) (float) :',
+				label: 'Brightness (shift) (float):',
 				id: 'float',
 				default: 0,
 				max: 1,
@@ -782,21 +781,21 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
 			},
 			{
 				type: 'number',
-				label: 'Contrast scale (float) :',
+				label: 'Contrast scale (float):',
 				id: 'float',
 				default: 1,
 				max: 2,
@@ -824,21 +823,21 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Base address :',
+				label: 'Base address:',
 				id: 'base_address',
 				default: layer_base_address,
 				useVariables: true,
 			},
 			{
 				type: 'textinput',
-				label: 'Layer name :',
+				label: 'Layer name:',
 				id: 'layer_name',
 				default: 'video',
 				useVariables: true,
 			},
 			{
 				type: 'number',
-				label: 'Saturation scale (float) :',
+				label: 'Saturation scale (float):',
 				id: 'float',
 				default: 1,
 				max: 4,

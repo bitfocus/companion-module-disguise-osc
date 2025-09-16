@@ -1,10 +1,9 @@
-const { combineRgb } = require('@companion-module/base')
-const osc_server = require('./osc_server.js')
+const osc_server = require('./osc_server')
+const choices = require('./choices')
 const utils = require('./utils')
 const icons = require('./icons')
 
 exports.initFeedbacks = function () {
-	let self = this
 	let feedbacks = {}
 
 	feedbacks['decrease_brightness'] = {
@@ -20,9 +19,11 @@ exports.initFeedbacks = function () {
 			png64: icons.brightness_down,
 		},
 		options: [],
-		callback: (feedback) => {
+		callback: () => {
 			if (utils.shift === true) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -39,9 +40,11 @@ exports.initFeedbacks = function () {
 			png64: icons.brightness_up,
 		},
 		options: [],
-		callback: (feedback) => {
+		callback: () => {
 			if (utils.shift === false) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -58,9 +61,11 @@ exports.initFeedbacks = function () {
 			png64: icons.volume_down,
 		},
 		options: [],
-		callback: (feedback) => {
+		callback: () => {
 			if (utils.shift === true) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -77,9 +82,11 @@ exports.initFeedbacks = function () {
 			png64: icons.volume_up,
 		},
 		options: [],
-		callback: (feedback) => {
+		callback: () => {
 			if (utils.shift === false) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -115,7 +122,7 @@ exports.initFeedbacks = function () {
 			bgcolor: utils.Gainsboro,
 		},
 		options: [],
-		callback: (feedback) => {
+		callback: () => {
 			if (osc_server.lastHeartbeat != this.getVariableValue('heartbeat') && this.blink_button) {
 				return true
 			} else if (osc_server.lastHeartbeat === this.getVariableValue('heartbeat')) {
@@ -134,9 +141,11 @@ exports.initFeedbacks = function () {
 			color: utils.FireBrick,
 		},
 		options: [],
-		callback: (feedback) => {
+		callback: () => {
 			if (this.getVariableValue('brightness') === '0.00' && this.blink_button) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}
@@ -149,9 +158,11 @@ exports.initFeedbacks = function () {
 			color: utils.FireBrick,
 		},
 		options: [],
-		callback: (feedback) => {
+		callback: () => {
 			if (this.getVariableValue('volume') === '0.00' && this.blink_button) {
 				return true
+			} else {
+				return false
 			}
 		},
 	}

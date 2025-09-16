@@ -1,6 +1,5 @@
 const osc = require('osc')
-const { InstanceStatus, CompanionVariableDefinition, CompanionVariableValues } = require('@companion-module/base')
-const choices = require('./choices')
+const { InstanceStatus } = require('@companion-module/base')
 const utils = require('./utils')
 
 const osc_server = {
@@ -35,7 +34,7 @@ const osc_server = {
 				self.log('error', 'Error: Selected port in use.' + err.message)
 				self.updateStatus(
 					InstanceStatus.ConnectionFailure,
-					`Port ${self.config.localrecieve_portport} in use elsewhere.`
+					`Port ${self.config.localrecieve_portport} in use elsewhere.`,
 				)
 			} else {
 				self.log('error', 'Error: UDP port error: ' + err.message)
