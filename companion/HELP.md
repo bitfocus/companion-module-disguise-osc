@@ -33,6 +33,7 @@ This module provides default OSC controls to the d3/disguise server. Setup OSC t
 - Shift aware brightness[^2]
 
 [^1]: Toggle shift inverts a boolean variable not available to the user. It provides increased functionality to shift aware actions, presets and feedbacks.
+
 [^2]: If shift is _false_ shift aware volume / brightness decrement the linked value by the user provided step value. If shift is _true_ shift aware volume/brightness increment the linked value by the user provided step value.
 
 **layer control**
@@ -98,6 +99,7 @@ This module provides default OSC controls to the d3/disguise server. Setup OSC t
 - heartbeat / toggle shift[^4]
 
 [^3]: Shift aware volume/brightness presets allow chnages to be made in both directions depending on the value of the shift variable
+
 [^4]: The heartbeat preset includes the toggle shift action. Each time the button is pressed shift will invert.
 
 **FEEDBACKS**

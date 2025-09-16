@@ -1,9 +1,7 @@
-const { InstanceBase, Regex, runEntrypoint, combineRgb } = require('@companion-module/base')
+const { InstanceBase, Regex, runEntrypoint } = require('@companion-module/base')
 const UpgradeScripts = require('./upgrades')
 
 const osc_server = require('./osc_server.js')
-const choices = require('./choices')
-const utils = require('./utils')
 const actions = require('./actions')
 const presets = require('./presets')
 const feedbacks = require('./feedbacks')
@@ -23,7 +21,7 @@ class disguiseOSCInstance extends InstanceBase {
 		this.updateStatus('Disconnected')
 	}
 
-	async init(config, firstInit) {
+	async init(config) {
 		let self = this
 
 		this.config = config

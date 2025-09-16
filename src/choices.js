@@ -1,4 +1,4 @@
-choices = {
+const choices = {
 	BLENDMODE: [
 		{ id: '00', label: 'Over' },
 		{ id: '01', label: 'Alpha' },

@@ -1,9 +1,4 @@
-const {
-	InstanceStatus,
-	CompanionVariableDefinition,
-	CompanionVariableValues,
-	combineRgb,
-} = require('@companion-module/base')
+const { combineRgb } = require('@companion-module/base')
 
 const utils = {
 	// boolean to assist with changing numeric values in both directions on a single button
@@ -46,67 +41,67 @@ const utils = {
 			}
 		} else if (message.address === '/d3/showcontrol/trackposition') {
 			if (message.args.length > 0) {
-				var trackPos = message.args[0].value
+				const trackPos = message.args[0].value
 				self.setVariableValues({
 					trackposition: trackPos,
 				})
-				var hh = trackPos.slice(0, 2) // split timecode - hours
+				const hh = trackPos.slice(0, 2) // split timecode - hours
 				self.setVariableValues({
 					trackposition_hh: hh,
 				})
-				var trackpos_mm = trackPos.slice(3, 5) // split timecode - minutes
+				const trackpos_mm = trackPos.slice(3, 5) // split timecode - minutes
 				self.setVariableValues({
 					trackposition_mm: trackpos_mm,
 				})
-				var trackpos_ss = trackPos.slice(6, 8) // split timecode - minutes
+				const trackpos_ss = trackPos.slice(6, 8) // split timecode - minutes
 				self.setVariableValues({
 					trackposition_ss: trackpos_ss,
 				})
-				var trackpos_ff = trackPos.slice(9, 11) // split timecode - minutes
+				const trackpos_ff = trackPos.slice(9, 11) // split timecode - minutes
 				self.setVariableValues({
 					trackposition_ff: trackpos_ff,
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/timecodeposition') {
 			if (message.args.length > 0) {
-				var timecodePos = message.args[0].value
+				const timecodePos = message.args[0].value
 				self.setVariableValues({
 					timecodeposition: timecodePos,
 				})
-				var hh = timecodePos.slice(0, 2) // split timecode - hours
+				const hh = timecodePos.slice(0, 2) // split timecode - hours
 				self.setVariableValues({
 					timecodeposition_hh: hh,
 				})
-				var timecodePos_mm = timecodePos.slice(3, 5) // split timecode - minutes
+				const timecodePos_mm = timecodePos.slice(3, 5) // split timecode - minutes
 				self.setVariableValues({
 					timecodeposition_mm: timecodePos_mm,
 				})
-				var timecodePos_ss = timecodePos.slice(6, 8) // split timecode - minutes
+				const timecodePos_ss = timecodePos.slice(6, 8) // split timecode - minutes
 				self.setVariableValues({
 					timecodeposition_ss: timecodePos_ss,
 				})
-				var timecodePos_ff = timecodePos.slice(9, 11) // split timecode - minutes
+				const timecodePos_ff = timecodePos.slice(9, 11) // split timecode - minutes
 				self.setVariableValues({
 					timecodeposition_ff: timecodePos_ff,
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/trackname') {
 			if (message.args.length > 0) {
-				var trackName = message.args[0].value
+				const trackName = message.args[0].value
 				self.setVariableValues({
 					trackname: trackName,
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/trackid') {
 			if (message.args.length > 0) {
-				var trackID = message.args[0].value
+				const trackID = message.args[0].value
 				self.setVariableValues({
 					trackid: trackID,
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/currentsectionname') {
 			if (message.args.length > 0) {
-				var currentSectionName = message.args[0].value
+				const currentSectionName = message.args[0].value
 				// console.log(currentSectionName.length)
 				if (currentSectionName.length > 0) {
 					self.setVariableValues({
@@ -120,7 +115,7 @@ const utils = {
 			}
 		} else if (message.address === '/d3/showcontrol/nextsectionname') {
 			if (message.args.length > 0) {
-				var nextSectionName = message.args[0].value
+				const nextSectionName = message.args[0].value
 
 				if (nextSectionName.length > 0) {
 					self.setVariableValues({
@@ -134,44 +129,44 @@ const utils = {
 			}
 		} else if (message.address === '/d3/showcontrol/sectionhint') {
 			if (message.args.length > 0) {
-				var sectionHint = message.args[0].value
+				const sectionHint = message.args[0].value
 				self.setVariableValues({
 					sectionHint: sectionHint,
 				})
 
-				var sectionElapsed = sectionHint.match(/\+\d{2}:\d{2}:\d{2}\.\d{2}/) // section time elapsed
+				const sectionElapsed = sectionHint.match(/\+\d{2}:\d{2}:\d{2}\.\d{2}/) // section time elapsed
 				self.setVariableValues({
 					sectionElapsed: sectionElapsed,
 				})
-				var sectionRemaining = sectionHint.match(/\-\d{2}:\d{2}:\d{2}\.\d{2}/) // section time remaining
+				const sectionRemaining = sectionHint.match(/-\d{2}:\d{2}:\d{2}\.\d{2}/) // section time remaining
 				self.setVariableValues({
 					sectionRemaining: sectionRemaining,
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/volume') {
 			if (message.args.length > 0) {
-				var volume = message.args[0].value
+				const volume = message.args[0].value
 				self.setVariableValues({
 					volume: volume.toFixed(2), // volume in %
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/brightness') {
 			if (message.args.length > 0) {
-				var brightness = message.args[0].value
+				const brightness = message.args[0].value
 				self.setVariableValues({
 					brightness: brightness.toFixed(2), // brightness
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/bpm') {
 			if (message.args.length > 0) {
-				var bpm = message.args[0].value
+				const bpm = message.args[0].value
 				self.setVariableValues({
 					bpm: bpm,
 				})
 			}
 		} else if (message.address === '/d3/showcontrol/playmode') {
 			if (message.args.length > 0) {
-				var playMode = message.args[0].value
+				const playMode = message.args[0].value
 				self.setVariableValues({
 					playMode: playMode,
 				})
