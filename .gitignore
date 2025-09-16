@@ -9,3 +9,4 @@ build-config.cjs
 .vscode/settings.json
 yarn.lock
 /.yarn
+*.tgz
