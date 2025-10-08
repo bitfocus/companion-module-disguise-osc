@@ -12,6 +12,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.heartbeat,
 			bgcolor: utils.MatteBlack,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -36,6 +37,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.play,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -63,6 +65,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.playToEndofSection,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -99,6 +102,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.loop,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -126,6 +130,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.stop,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -153,6 +158,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.prevSection,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -170,6 +176,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.nextSection,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -187,6 +194,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.backToStart,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -204,6 +212,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.prevTrack,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -221,6 +230,7 @@ exports.initPresets = function () {
 			color: utils.Gainsboro,
 			png64: icons.nextTrack,
 			bgcolor: utils.Gainsboro,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -240,6 +250,7 @@ exports.initPresets = function () {
 			png64: icons.empty,
 			size: '18',
 			bgcolor: utils.MatteBlack,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -259,6 +270,7 @@ exports.initPresets = function () {
 			png64: icons.empty,
 			size: '18',
 			bgcolor: utils.MatteBlack,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -278,6 +290,7 @@ exports.initPresets = function () {
 			png64: icons.empty,
 			size: '18',
 			bgcolor: utils.MatteBlack,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -298,6 +311,7 @@ exports.initPresets = function () {
 			size: '14',
 			bgcolor: utils.Gainsboro,
 			png64: icons.brightness_down,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -333,6 +347,7 @@ exports.initPresets = function () {
 			size: '14',
 			bgcolor: utils.Gainsboro,
 			png64: icons.brightness_up,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -368,6 +383,7 @@ exports.initPresets = function () {
 			size: '14',
 			bgcolor: utils.Gainsboro,
 			png64: icons.brightness,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -425,6 +441,7 @@ exports.initPresets = function () {
 			size: '14',
 			bgcolor: utils.Gainsboro,
 			png64: icons.volume_down,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -460,6 +477,7 @@ exports.initPresets = function () {
 			size: '14',
 			bgcolor: utils.Gainsboro,
 			png64: icons.volume_up,
+			show_topbar: false,
 		},
 		steps: [
 			{
@@ -495,6 +513,7 @@ exports.initPresets = function () {
 			size: '14',
 			bgcolor: utils.Gainsboro,
 			png64: icons.volume,
+			show_topbar: false,
 		},
 		steps: [
 			{

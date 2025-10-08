@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### 2.0.5 (2025-10-07)
+
+### Fixed
+
+- Preset icons not sized properly due to topbar
+
 #### 2.0.4 (2025-09-15)
 
 ### Fixed
