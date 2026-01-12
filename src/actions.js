@@ -111,14 +111,12 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
+		callback: (event) => {
 			const path = `${showcontrol_base_address}trackname`
-			const string = await this.parseVariablesInString(event.options.string)
-
 			this.sendOscMessage(path, [
 				{
 					type: 's',
-					value: '' + string,
+					value: '' + event.options.string,
 				},
 			])
 		},
@@ -131,18 +129,29 @@ exports.initActions = function () {
 				label: 'Track ID (integer)',
 				id: 'int',
 				default: 1,
-				regex: Regex.SIGNED_NUMBER,
+				regex: /^[-+]?\d+$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
+		callback: async (action, context) => {
 			const path = `${showcontrol_base_address}trackid`
-			const int = await this.parseVariablesInString(event.options.int)
-
+			let intStr = action.options.int
+			if (context && context.parseVariablesInString) {
+				intStr = await context.parseVariablesInString(intStr)
+				this.log('debug', `[trackid] parsed variable: ${intStr}`)
+			} else {
+				this.log('debug', `[trackid] using raw value: ${intStr}`)
+			}
+			const intVal = parseInt(intStr)
+			this.log('debug', `[trackid] final int value: ${intVal}`)
+			if (isNaN(intVal)) {
+				this.log('debug', '[trackid] Not a number, aborting')
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
-					value: parseInt(int),
+					value: intVal,
 				},
 			])
 		},
@@ -151,53 +160,69 @@ exports.initActions = function () {
 		name: 'Cue',
 		options: [
 			{
-				type: 'number',
-				label: 'Cue (integer)',
+				type: 'textinput',
+				label: 'Cue (integer or variable)',
 				id: 'int',
 				default: 1,
-				regex: Regex.SIGNED_NUMBER,
+				// Accepts either a signed number or a variable pattern
+				regex: /^[-+]?\d+$|^\$\(.+\)$/,
 				useVariables: true,
+				tooltip: 'Enter an integer or a variable that resolves to an integer.',
+				error: 'Please enter a valid integer or variable that resolves to an integer.',
 			},
 		],
-		callback: async (event) => {
+		callback: async (action, context) => {
 			const path = `${showcontrol_base_address}cue`
-			const int = await this.parseVariablesInString(event.options.int)
-
+			// Always resolve variables using parseVariablesInString for compatibility
+			let intStr = action.options.int
+			if (context && context.parseVariablesInString) {
+				intStr = await context.parseVariablesInString(intStr)
+				this.log('debug', `[cue] parsed variable: ${intStr}`)
+			} else {
+				this.log('debug', `[cue] using raw value: ${intStr}`)
+			}
+			const intVal = parseInt(intStr)
+			this.log('debug', `[cue] final int value: ${intVal}`)
+			if (isNaN(intVal)) {
+				this.log('debug', '[cue] Not a number, aborting')
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
-					value: parseInt(int),
+					value: intVal,
 				},
 			])
 		},
 	}
 	actions['floatcue'] = {
-		name: 'Float cue',
+		name: 'Float Cue',
 		options: [
 			{
-				type: 'static-text',
-				label: '*** important ***',
-				id: 'important-line',
-				value:
-					'Requires xx.yy format in disguise tag value e.g. 1.1 entered here will only trigger disguise if cue is set to 01.10',
-			},
-			{
-				type: 'number',
-				label: 'Cue (float)',
+				type: 'textinput',
+				label: 'Float Cue (float or variable)',
 				id: 'float',
-				default: '1.1',
-				regex: Regex.SIGNED_FLOAT,
+				default: 1.0,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
+				tooltip: 'Enter a float or a variable that resolves to a float.',
+				error: 'Please enter a valid float or variable that resolves to a float.',
 			},
 		],
-		callback: async (event) => {
+		callback: async (action, context) => {
 			const path = `${showcontrol_base_address}floatcue`
-			const float = await this.parseVariablesInString(event.options.float)
-
+			let floatStr = action.options.float
+			if (context && context.parseVariablesInString) {
+				floatStr = await context.parseVariablesInString(floatStr)
+			}
+			const floatVal = parseFloat(floatStr)
+			if (isNaN(floatVal)) {
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseFloat(float),
+					value: floatVal,
 				},
 			])
 		},
@@ -240,18 +265,22 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const float = await this.parseVariablesInString(event.options.float)
+		callback: async (event, context) => {
+			let floatStr = event.options.float
+			if (context && context.parseVariablesInString) {
+				floatStr = await context.parseVariablesInString(floatStr)
+				this.log('debug', `[shift_brightness] parsed variable: ${floatStr}`)
+			} else {
+				this.log('debug', `[shift_brightness] using raw value: ${floatStr}`)
+			}
 			const brightness = this.getVariableValue('brightness')
-
 			let new_brightness = utils.shift
-				? utils.decrement_float(brightness, float)
-				: utils.increment_float(brightness, float)
-
+				? utils.decrement_float(brightness, floatStr)
+				: utils.increment_float(brightness, floatStr)
 			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
@@ -272,14 +301,20 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const float = await this.parseVariablesInString(event.options.float)
+		callback: async (event, context) => {
+			let floatStr = event.options.float
+			if (context && context.parseVariablesInString) {
+				floatStr = await context.parseVariablesInString(floatStr)
+				this.log('debug', `[increment_brightness] parsed variable: ${floatStr}`)
+			} else {
+				this.log('debug', `[increment_brightness] using raw value: ${floatStr}`)
+			}
 			const brightness = this.getVariableValue('brightness')
-			const new_brightness = utils.increment_float(brightness, float)
+			const new_brightness = utils.increment_float(brightness, floatStr)
 			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
@@ -300,14 +335,20 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const float = await this.parseVariablesInString(event.options.float)
+		callback: async (event, context) => {
+			let floatStr = event.options.float
+			if (context && context.parseVariablesInString) {
+				floatStr = await context.parseVariablesInString(floatStr)
+				this.log('debug', `[decrement_brightness] parsed variable: ${floatStr}`)
+			} else {
+				this.log('debug', `[decrement_brightness] using raw value: ${floatStr}`)
+			}
 			const brightness = this.getVariableValue('brightness')
-			const new_brightness = utils.decrement_float(brightness, float)
+			let new_brightness = utils.decrement_float(brightness, floatStr)
 			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
@@ -328,16 +369,20 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const float = await this.parseVariablesInString(event.options.float)
+		callback: async (event, context) => {
+			let floatStr = event.options.float
+			if (context && context.parseVariablesInString) {
+				floatStr = await context.parseVariablesInString(floatStr)
+				this.log('debug', `[shift_volume] parsed variable: ${floatStr}`)
+			} else {
+				this.log('debug', `[shift_volume] using raw value: ${floatStr}`)
+			}
 			const volume = this.getVariableValue('volume')
-
-			let new_volume = utils.shift ? utils.decrement_float(volume, float) : utils.increment_float(volume, float)
-
+			let new_volume = utils.shift ? utils.decrement_float(volume, floatStr) : utils.increment_float(volume, floatStr)
 			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
@@ -358,14 +403,20 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const float = await this.parseVariablesInString(event.options.float)
+		callback: async (event, context) => {
+			let floatStr = event.options.float
+			if (context && context.parseVariablesInString) {
+				floatStr = await context.parseVariablesInString(floatStr)
+				this.log('debug', `[increment_volume] parsed variable: ${floatStr}`)
+			} else {
+				this.log('debug', `[increment_volume] using raw value: ${floatStr}`)
+			}
 			const volume = this.getVariableValue('volume')
-			const new_volume = utils.increment_float(volume, float)
+			const new_volume = utils.increment_float(volume, floatStr)
 			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
@@ -386,14 +437,20 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const float = await this.parseVariablesInString(event.options.float)
+		callback: async (event, context) => {
+			let floatStr = event.options.float
+			if (context && context.parseVariablesInString) {
+				floatStr = await context.parseVariablesInString(floatStr)
+				this.log('debug', `[decrement_volume] parsed variable: ${floatStr}`)
+			} else {
+				this.log('debug', `[decrement_volume] using raw value: ${floatStr}`)
+			}
 			const volume = this.getVariableValue('volume')
-			const new_volume = utils.decrement_float(volume, float)
+			const new_volume = utils.decrement_float(volume, floatStr)
 			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
@@ -461,13 +518,13 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Brightness (float)',
 				id: 'float',
 				default: 1,
 				max: 1,
 				min: 0,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -509,14 +566,14 @@ exports.initActions = function () {
 				choices: choices.TINT,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Tint (float)',
 				id: 'float',
 				default: 1,
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -552,13 +609,13 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Speed (int)',
 				id: 'int',
 				default: 0,
 				max: 4,
 				min: -4,
-				regex: Regex.SIGNED_NUMBER,
+				regex: /^[-+]?\d+$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -669,13 +726,13 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Transition time (int):',
 				id: 'int',
 				default: 0,
 				max: 10,
 				min: 0,
-				regex: Regex.SIGNED_NUMBER,
+				regex: /^[-+]?\d+$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -710,14 +767,14 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Volume (float):',
 				id: 'float',
 				default: 1,
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -752,14 +809,14 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Brightness (shift) (float):',
 				id: 'float',
 				default: 0,
 				max: 1,
 				min: -1,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -794,14 +851,14 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Contrast scale (float):',
 				id: 'float',
 				default: 1,
 				max: 2,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -836,14 +893,14 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 			{
-				type: 'number',
+				type: 'textinput',
 				label: 'Saturation scale (float):',
 				id: 'float',
 				default: 1,
 				max: 4,
 				min: 0,
 				step: 0.01,
-				regex: Regex.SIGNED_FLOAT,
+				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
 				useVariables: true,
 			},
 		],
@@ -860,6 +917,74 @@ exports.initActions = function () {
 			])
 		},
 	}
-
+	// user-defined custom OSC action
+	actions['custom_osc'] = {
+		name: 'Send custom OSC message',
+		options: [
+			{
+				type: 'textinput',
+				label: 'OSC Path',
+				id: 'osc_path',
+				default: '/d3/custom/path',
+				useVariables: true,
+				regex: /^\/.+/, // must start with '/'
+				tooltip: 'OSC path, e.g. /d3/custom/path. Supports variables.',
+			},
+			{
+				type: 'dropdown',
+				label: 'Argument Type',
+				id: 'arg_type',
+				default: 'string',
+				choices: [
+					{ id: 'string', label: 'String' },
+					{ id: 'int', label: 'Integer' },
+					{ id: 'float', label: 'Float' },
+				],
+			},
+			{
+				type: 'textinput',
+				label: 'Argument Value',
+				id: 'arg_value',
+				default: '',
+				useVariables: true,
+				regex: /.*/, // backend validation only
+				tooltip: 'Value to send. Supports variables.',
+			},
+		],
+		callback: async (action, context) => {
+			// Resolve variables
+			let path = action.options.osc_path
+			let value = action.options.arg_value
+			if (context && context.parseVariablesInString) {
+				path = await context.parseVariablesInString(path)
+				value = await context.parseVariablesInString(value)
+			}
+			// Validate path
+			if (!/^\/.+/.test(path)) {
+				this.log('error', '[custom_osc] Invalid OSC path: ' + path)
+				return
+			}
+			// Type conversion
+			let argType = action.options.arg_type
+			let oscArg = { type: 's', value: value }
+			if (argType === 'int') {
+				const intVal = parseInt(value)
+				if (isNaN(intVal)) {
+					this.log('error', '[custom_osc] Argument is not a valid integer: ' + value)
+					return
+				}
+				oscArg = { type: 'i', value: intVal }
+			} else if (argType === 'float') {
+				const floatVal = parseFloat(value)
+				if (isNaN(floatVal)) {
+					this.log('error', '[custom_osc] Argument is not a valid float: ' + value)
+					return
+				}
+				oscArg = { type: 'f', value: floatVal }
+			}
+			// Send OSC message
+			this.sendOscMessage(path, [oscArg])
+		},
+	}
 	this.setActionDefinitions(actions)
 }

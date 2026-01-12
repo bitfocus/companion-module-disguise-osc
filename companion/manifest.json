@@ -3,7 +3,7 @@
 	"name": "disguise-osc",
 	"shortname": "d3-osc",
 	"description": "Provides osc controls/feedbacks for disguise servers",
-	"version": "0.0.0",
+	"version": "2.0.6",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-disguise-osc.git",
 	"bugs": "https://github.com/bitfocus/companion-module-disguise-osc/issues",

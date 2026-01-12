@@ -184,8 +184,6 @@ const utils = {
 					self.PLAYMODE = '05'
 				}
 			}
-		} else {
-			self.log('debug', `OSC message not handled by processMessage :\n\t ${message.address} ${message.args[0].value}`)
 		}
 	},
 	// colors shorthand
