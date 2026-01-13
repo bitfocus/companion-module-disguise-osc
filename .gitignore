@@ -6,6 +6,6 @@ package-lock.json
 osc-layer-personality.txt
 DEBUG-PACKAGED
 build-config.cjs
-.vscode/settings.json
+.vscode/
 /.yarn
 *.tgz

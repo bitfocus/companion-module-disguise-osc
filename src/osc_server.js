@@ -4,12 +4,16 @@ const utils = require('./utils')
 
 const osc_server = {
 	lastHeartbeat: null,
+	// Buffer to store latest args for each OSC address
+	received: {},
 
 	close: async function () {
 		await this.udpPort.close()
 	},
 
 	connect: async function (self) {
+		// Expose buffer on self for access in feedbacks and actions
+		if (!self.oscReceived) self.oscReceived = {}
 		this.udpPort = new osc.UDPPort({
 			localAddress: '0.0.0.0',
 			localPort: self.config.recieve_port,
@@ -25,8 +29,16 @@ const osc_server = {
 		})
 
 		this.udpPort.on('message', (oscMsg) => {
+			// Store latest args for this address in both osc_server and instance buffer
+			this.received[oscMsg.address] = oscMsg.args
+			self.oscReceived[oscMsg.address] = oscMsg.args
+			// Debug log for buffer
+			// if (self.log) {
+			// 	self.log('debug', `[oscReceived] ${oscMsg.address}: ${JSON.stringify(oscMsg.args)}`)
+			// } else {
+			// 	console.log('[oscReceived]', oscMsg.address, oscMsg.args)
+			// }
 			utils.processMessage(oscMsg, self)
-			self.updateStatus(InstanceStatus.Ok, 'Connected.')
 		})
 
 		this.udpPort.on('error', (err) => {
@@ -41,6 +53,11 @@ const osc_server = {
 				self.updateStatus(InstanceStatus.UnknownError, err.message)
 			}
 		})
+	},
+
+	// Helper to get last value(s) for an OSC address
+	getLastValueForAddress: function (address) {
+		return this.received[address]
 	},
 }
 
