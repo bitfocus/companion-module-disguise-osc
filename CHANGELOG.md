@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### 2.0.6 (2026-01-12)
+#### 2.1.0 (2026-01-12)
 
 ### Added
 
