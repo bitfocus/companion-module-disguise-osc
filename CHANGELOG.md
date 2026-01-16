@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### 2.1.0 (2026-01-16)
+
+### Changed
+
+- Branch renamed and semantic version bumped from 2.0.6 to 2.1.0 for alignment with new release cycle.
+
 #### 2.0.6 (2026-01-12)
 
 ### Added
