@@ -10,11 +10,13 @@ All actions that accept numeric input (integer or float) now support Companion v
 
 **Examples:**
 
-- Cue: Enter `5` or `$(internal:cue_number)`
+- Cue: Enter `5`, `1.2`, `1.2.5`, or `$(internal:cue_number)`
 - Float Cue: Enter `1.23` or `$(internal:float_value)`
 - Brightness/Volume Steps: Enter `0.01` or `$(internal:step)`
 
 If a variable does not resolve to a valid number, the action will log a debug message and abort.
+
+Cue accepts 1 to 3 integer parts separated by dots. For example, `1.2.5` sends three integer arguments, `[1, 2, 5]`, to `/d3/showcontrol/cue`. A variable can supply the full cue number. Each part must fit in a signed 32-bit integer. Invalid cues are logged as errors and are not sent.
 
 ### Debug Logging
 
@@ -41,7 +43,7 @@ The UI will now accept both direct numbers and variable patterns in relevant fie
 - Next track
 - Track name
 - Track ID
-- Cue (integer or variable)
+- Cue (integer parts or variable)
 - Float Cue (float or variable)
 - Fade up
 - Fade down

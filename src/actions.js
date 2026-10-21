@@ -161,14 +161,13 @@ exports.initActions = function () {
 		options: [
 			{
 				type: 'textinput',
-				label: 'Cue (integer or variable)',
+				label: 'Cue (integer parts or variable)',
 				id: 'int',
 				default: 1,
-				// Accepts either a signed number or a variable pattern
-				regex: /^[-+]?\d+$|^\$\(.+\)$/,
+				regex: /^[-+]?\d+(?:\.[-+]?\d+){0,2}$|^\$\(.+\)$/,
 				useVariables: true,
-				tooltip: 'Enter an integer or a variable that resolves to an integer.',
-				error: 'Please enter a valid integer or variable that resolves to an integer.',
+				tooltip: 'Enter 1 to 3 integers separated by dots, e.g. 1.2.5, or a variable with this value.',
+				error: 'Enter 1 to 3 integers separated by dots, or a variable with this value.',
 			},
 		],
 		callback: async (action, context) => {
@@ -181,18 +180,20 @@ exports.initActions = function () {
 			} else {
 				this.log('debug', `[cue] using raw value: ${intStr}`)
 			}
-			const intVal = parseInt(intStr)
-			this.log('debug', `[cue] final int value: ${intVal}`)
-			if (isNaN(intVal)) {
-				this.log('debug', '[cue] Not a number, aborting')
+			const cue = String(intStr).trim()
+			if (!/^[-+]?\d+(?:\.[-+]?\d+){0,2}$/.test(cue)) {
+				this.log('error', '[cue] Enter 1 to 3 integers separated by dots.')
 				return
 			}
-			this.sendOscMessage(path, [
-				{
-					type: 'i',
-					value: intVal,
-				},
-			])
+			const parts = cue.split('.').map(Number)
+			if (parts.some((part) => part < -2147483648 || part > 2147483647)) {
+				this.log('error', '[cue] Each part must be a signed 32-bit integer.')
+				return
+			}
+			this.sendOscMessage(
+				path,
+				parts.map((value) => ({ type: 'i', value })),
+			)
 		},
 	}
 	actions['floatcue'] = {
