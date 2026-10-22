@@ -16,7 +16,7 @@ All actions that accept numeric input (integer or float) now support Companion v
 
 If a variable does not resolve to a valid number, the action will log a debug message and abort.
 
-Cue accepts 1 to 3 integer parts separated by dots. For example, `1.2.5` sends three integer arguments, `[1, 2, 5]`, to `/d3/showcontrol/cue`. A variable can supply the full cue number. Each part must fit in a signed 32-bit integer. Invalid cues are logged as errors and are not sent.
+Cue accepts 1 to 3 unsigned integer parts separated by dots. For example, `1.2.5` sends three integer arguments, `[1, 2, 5]`, to `/d3/showcontrol/cue`. A variable can supply the full cue number. Each part must be between `0` and `2147483647`, with no plus or minus sign. Invalid cues are logged as errors and are not sent.
 
 ### Debug Logging
 

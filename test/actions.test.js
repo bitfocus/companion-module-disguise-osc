@@ -22,13 +22,12 @@ test('Cue sends 1 to 3 parts as separate OSC integers', async () => {
 	const cases = [
 		[1, [1]],
 		['5', [5]],
-		['-1', [-1]],
-		['+1', [1]],
+		['0', [0]],
 		['1.2', [1, 2]],
 		['1.2.5', [1, 2, 5]],
 		['1.0.0', [1, 0, 0]],
 		[' 001.02.005 ', [1, 2, 5]],
-		['-2147483648.0.2147483647', [-2147483648, 0, 2147483647]],
+		['2147483647.0.2147483647', [2147483647, 0, 2147483647]],
 	]
 	for (const [input, values] of cases) {
 		await cue.callback({ options: { int: input } })
@@ -79,6 +78,13 @@ test('Cue rejects invalid parts, extra parts, and integers outside the OSC range
 		'1e2',
 		'NaN',
 		'Infinity',
+		'-1',
+		'+1',
+		'-0',
+		'1.-2',
+		'1.+2',
+		'1.2.-5',
+		'1.2.+5',
 		'2147483648',
 		'1.-2147483649',
 		'1.2.999999999999999999999',
@@ -94,18 +100,21 @@ test('Cue rejects invalid parts, extra parts, and integers outside the OSC range
 
 test('Cue rejects an invalid value from a variable', async () => {
 	const { cue, messages, logs } = createCueAction()
-	await cue.callback({ options: { int: '$(internal:cue_number)' } }, { parseVariablesInString: async () => '1.2.3.4' })
+	const invalidCues = ['1.2.3.4', '-1', '+1', '1.-2', '1.+2', '1.2.-5', '1.2.+5']
+	for (const value of invalidCues) {
+		await cue.callback({ options: { int: '$(internal:cue_number)' } }, { parseVariablesInString: async () => value })
+	}
 	assert.deepEqual(messages, [])
-	assert.equal(logs.at(-1).level, 'error')
+	assert.equal(logs.filter(({ level }) => level === 'error').length, invalidCues.length)
 })
 
 test('Cue input accepts multipart numbers and variables', () => {
 	const { cue } = createCueAction()
 	const { regex } = cue.options.find(({ id }) => id === 'int')
-	for (const value of ['1', '-1', '+1', '1.2', '1.2.5', '$(internal:cue_number)']) {
+	for (const value of ['0', '1', '1.2', '1.2.5', '$(internal:cue_number)']) {
 		assert.ok(regex.test(value), value)
 	}
-	for (const value of ['', '1.', '1..2', '1.2.3.4', '1.2x']) {
+	for (const value of ['', '-1', '+1', '-0', '1.-2', '1.+2', '1.2.-5', '1.2.+5', '1.', '1..2', '1.2.3.4', '1.2x']) {
 		assert.ok(!regex.test(value), value)
 	}
 })

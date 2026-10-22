@@ -164,10 +164,10 @@ exports.initActions = function () {
 				label: 'Cue (integer parts or variable)',
 				id: 'int',
 				default: 1,
-				regex: /^[-+]?\d+(?:\.[-+]?\d+){0,2}$|^\$\(.+\)$/,
+				regex: /^\d+(?:\.\d+){0,2}$|^\$\(.+\)$/,
 				useVariables: true,
-				tooltip: 'Enter 1 to 3 integers separated by dots, e.g. 1.2.5, or a variable with this value.',
-				error: 'Enter 1 to 3 integers separated by dots, or a variable with this value.',
+				tooltip: 'Enter 1 to 3 unsigned integers separated by dots, e.g. 1.2.5, or a variable with this value.',
+				error: 'Enter 1 to 3 unsigned integers separated by dots, or a variable with this value.',
 			},
 		],
 		callback: async (action, context) => {
@@ -181,13 +181,13 @@ exports.initActions = function () {
 				this.log('debug', `[cue] using raw value: ${intStr}`)
 			}
 			const cue = String(intStr).trim()
-			if (!/^[-+]?\d+(?:\.[-+]?\d+){0,2}$/.test(cue)) {
-				this.log('error', '[cue] Enter 1 to 3 integers separated by dots.')
+			if (!/^\d+(?:\.\d+){0,2}$/.test(cue)) {
+				this.log('error', '[cue] Enter 1 to 3 unsigned integers separated by dots.')
 				return
 			}
 			const parts = cue.split('.').map(Number)
-			if (parts.some((part) => part < -2147483648 || part > 2147483647)) {
-				this.log('error', '[cue] Each part must be a signed 32-bit integer.')
+			if (parts.some((part) => part > 2147483647)) {
+				this.log('error', '[cue] Each part must be between 0 and 2147483647.')
 				return
 			}
 			this.sendOscMessage(
