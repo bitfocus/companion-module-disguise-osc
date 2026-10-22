@@ -1,4 +1,3 @@
-const { Regex } = require('@companion-module/base')
 const choices = require('./choices')
 const utils = require('./utils')
 
