@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### 2.2.0 (2026-10-23)
+
+### Changed
+
+- Cue action now accepts multipart cue numbers (1 to 3 unsigned integer parts, e.g. `1.2.5`), sent as separate OSC integer arguments to `/d3/showcontrol/cue`. Invalid cues are logged as errors and not sent.
+
+### Fixed
+
+- Multipart cue numbers such as `1.2.5` were truncated to `1`.
+
 #### 2.1.0 (2026-01-16)
 
 ### Changed
