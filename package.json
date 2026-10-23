@@ -8,6 +8,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-disguise-osc.git"
 	},
 	"scripts": {
+		"test": "node --test",
 		"format": "prettier -w .",
 		"package": "companion-module-build",
 		"lint:raw": "eslint",
