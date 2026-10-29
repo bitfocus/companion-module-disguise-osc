@@ -14,7 +14,7 @@ exports.initActions = function () {
 		options: [],
 		callback: () => {
 			utils.shift = !utils.shift
-			self.checkfeedbacks()
+			self.checkFeedbacks()
 		},
 	}
 	// showcontrol actions
@@ -110,12 +110,16 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: (event) => {
+		callback: async (event, context) => {
 			const path = `${showcontrol_base_address}trackname`
+			let trackName = event.options.string
+			if (context && context.parseVariablesInString) {
+				trackName = await context.parseVariablesInString(trackName)
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 's',
-					value: '' + event.options.string,
+					value: '' + trackName,
 				},
 			])
 		},

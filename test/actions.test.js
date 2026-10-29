@@ -2,6 +2,7 @@
 const assert = require('node:assert/strict')
 const { test } = require('node:test')
 const { initActions } = require('../src/actions')
+const utils = require('../src/utils')
 
 function createActions(variables = {}, parseVariablesInString = async (text) => text) {
 	const messages = []
@@ -149,6 +150,32 @@ test('Track name sends one OSC string', async () => {
 	const { actions, messages } = createActions()
 	await actions.trackname.callback({ options: { string: 'Opening track' } })
 	assert.deepEqual(messages, [{ path: '/d3/showcontrol/trackname', args: [{ type: 's', value: 'Opening track' }] }])
+})
+
+test('Track name resolves variables before sending', async () => {
+	const { actions, messages } = createActions()
+	await actions.trackname.callback(
+		{ options: { string: '$(internal:track)' } },
+		{
+			parseVariablesInString: async (text) => {
+				assert.equal(text, '$(internal:track)')
+				return 'Opening track'
+			},
+		},
+	)
+	assert.deepEqual(messages, [{ path: '/d3/showcontrol/trackname', args: [{ type: 's', value: 'Opening track' }] }])
+})
+
+test('Toggle shift changes direction and checks feedback without throwing', (t) => {
+	const previousShift = utils.shift
+	t.after(() => {
+		utils.shift = previousShift
+	})
+	utils.shift = false
+	const { actions, feedbackChecks } = createActions()
+	actions.shift.callback()
+	assert.equal(utils.shift, true)
+	assert.deepEqual(feedbackChecks, [[]])
 })
 
 // https://help.disguise.one/designer/timeline-tracks-transports/osc/triggering-cues-with-osc
