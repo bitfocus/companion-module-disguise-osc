@@ -1,6 +1,6 @@
 {
 	"name": "disguise-osc",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"main": "src/main.js",
 	"license": "MIT",
 	"repository": {
@@ -8,6 +8,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-disguise-osc.git"
 	},
 	"scripts": {
+		"test": "node --test",
 		"format": "prettier -w .",
 		"package": "companion-module-build",
 		"lint:raw": "eslint",
