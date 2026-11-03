@@ -218,18 +218,22 @@ exports.initFeedbacks = function () {
 				tooltip: 'Type of value for validation',
 			},
 		],
-		callback: async (context) => {
+		callback: async (feedback, context) => {
 			// Use only the parseVariables or parseVariablesInString provided to the callback
 			let d3OscPath, expectedValue
 			try {
-				d3OscPath = context.options.d3_osc_path
-				expectedValue = context.options.expected_value
+				d3OscPath = feedback.options.d3_osc_path
+				expectedValue = feedback.options.expected_value
+				if (context && context.parseVariablesInString) {
+					d3OscPath = await context.parseVariablesInString(d3OscPath)
+					expectedValue = await context.parseVariablesInString(expectedValue)
+				}
 			} catch (err) {
 				this.log('debug', '[User OSC Feedback DEBUG] parseVariables error:', err)
 				return false
 			}
-			const comparison = context.options.comparison
-			const valueType = context.options.value_type
+			const comparison = feedback.options.comparison
+			const valueType = feedback.options.value_type
 
 			// Get last received value for path
 			const receivedArgs = osc_server.getLastValueForAddress ? osc_server.getLastValueForAddress(d3OscPath) : undefined
