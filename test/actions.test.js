@@ -39,13 +39,14 @@ test('Cue sends 1 to 3 parts as separate OSC integers', async () => {
 	assert.equal(messages.length, cases.length)
 })
 
-test('Cue splits the value prepared by the host', async () => {
+test('Cue resolves variables before it splits the parts', async () => {
 	const { cue, messages } = createCueAction()
 	await cue.callback(
-		{ options: { int: '1.2.5' } },
+		{ options: { int: '$(internal:cue_number)' } },
 		{
 			parseVariablesInString: async (input) => {
-				assert.fail('Host-prepared values must not be parsed again: ' + input)
+				assert.equal(input, '$(internal:cue_number)')
+				return '1.2.5'
 			},
 		},
 	)
@@ -101,7 +102,7 @@ test('Cue rejects an invalid value from a variable', async () => {
 	const { cue, messages, logs } = createCueAction()
 	const invalidCues = ['1.2.3.4', '-1', '+1', '1.-2', '1.+2', '1.2.-5', '1.2.+5']
 	for (const value of invalidCues) {
-		await cue.callback({ options: { int: value } })
+		await cue.callback({ options: { int: '$(internal:cue_number)' } }, { parseVariablesInString: async () => value })
 	}
 	assert.deepEqual(messages, [])
 	assert.equal(logs.filter(({ level }) => level === 'error').length, invalidCues.length)
