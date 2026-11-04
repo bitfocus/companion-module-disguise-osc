@@ -1,6 +1,7 @@
 /* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=20.0.0" }] */
 const assert = require('node:assert/strict')
-const { EventEmitter } = require('node:events')
+const { createSocket } = require('node:dgram')
+const { EventEmitter, once } = require('node:events')
 const { test } = require('node:test')
 const { InstanceStatus } = require('@companion-module/base')
 const osc = require('osc')
@@ -63,6 +64,36 @@ test('OSC receiver reports an occupied port as a connection failure', async (t) 
 		'Port 7400 in use elsewhere.',
 	])
 	assert.equal(instance.log.mock.calls[0].arguments[0], 'error')
+})
+
+test('OSC receiver closes after a real UDP bind conflict', { timeout: 5000 }, async (t) => {
+	const occupied = createSocket('udp4')
+	const listening = once(occupied, 'listening')
+	occupied.bind(0, '0.0.0.0')
+	await listening
+	t.after(() => new Promise((resolve) => occupied.close(resolve)))
+
+	const server = { ...oscServer, received: {} }
+	const instance = {
+		config: { recieve_port: occupied.address().port },
+		updateStatus: t.mock.fn(),
+		log: t.mock.fn(),
+	}
+	await server.connect(instance)
+	const socket = server.udpPort.socket
+	let socketClosed = false
+	socket.once('close', () => (socketClosed = true))
+	t.after(async () => {
+		if (!socketClosed) await new Promise((resolve) => socket.close(resolve))
+	})
+	const [error] = await once(server.udpPort, 'error')
+	assert.equal(error.code, 'EADDRINUSE')
+
+	const timeout = new Promise((_, reject) => {
+		const timer = setTimeout(() => reject(new Error('Receiver close did not complete after EADDRINUSE')), 1000)
+		t.after(() => clearTimeout(timer))
+	})
+	await Promise.race([server.close(), timeout])
 })
 
 test('OSC receiver reports other UDP errors', async (t) => {
