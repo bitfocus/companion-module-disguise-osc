@@ -132,15 +132,9 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (action, context) => {
+		callback: async (action) => {
 			const path = `${showcontrol_base_address}trackid`
 			let intStr = action.options.int
-			if (context && context.parseVariablesInString) {
-				intStr = await context.parseVariablesInString(intStr)
-				this.log('debug', `[trackid] parsed variable: ${intStr}`)
-			} else {
-				this.log('debug', `[trackid] using raw value: ${intStr}`)
-			}
 			const intVal = parseInt(intStr)
 			this.log('debug', `[trackid] final int value: ${intVal}`)
 			if (isNaN(intVal)) {
@@ -169,16 +163,9 @@ exports.initActions = function () {
 				error: 'Enter 1 to 3 unsigned integers separated by dots, or a variable with this value.',
 			},
 		],
-		callback: async (action, context) => {
+		callback: async (action) => {
 			const path = `${showcontrol_base_address}cue`
-			// Always resolve variables using parseVariablesInString for compatibility
 			let intStr = action.options.int
-			if (context && context.parseVariablesInString) {
-				intStr = await context.parseVariablesInString(intStr)
-				this.log('debug', `[cue] parsed variable: ${intStr}`)
-			} else {
-				this.log('debug', `[cue] using raw value: ${intStr}`)
-			}
 			const cue = String(intStr).trim()
 			if (!/^\d+(?:\.\d+){0,2}$/.test(cue)) {
 				this.log('error', '[cue] Enter 1 to 3 unsigned integers separated by dots.')
@@ -209,12 +196,9 @@ exports.initActions = function () {
 				error: 'Please enter a valid float or variable that resolves to a float.',
 			},
 		],
-		callback: async (action, context) => {
+		callback: async (action) => {
 			const path = `${showcontrol_base_address}floatcue`
 			let floatStr = action.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-			}
 			const floatVal = parseFloat(floatStr)
 			if (isNaN(floatVal)) {
 				return
@@ -269,14 +253,8 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
+		callback: async (event) => {
 			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[shift_brightness] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[shift_brightness] using raw value: ${floatStr}`)
-			}
 			const brightness = this.getVariableValue('brightness')
 			let new_brightness = utils.shift
 				? utils.decrement_float(brightness, floatStr)
@@ -305,14 +283,8 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
+		callback: async (event) => {
 			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[increment_brightness] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[increment_brightness] using raw value: ${floatStr}`)
-			}
 			const brightness = this.getVariableValue('brightness')
 			const new_brightness = utils.increment_float(brightness, floatStr)
 			const path = `${showcontrol_base_address}brightness`
@@ -339,14 +311,8 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
+		callback: async (event) => {
 			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[decrement_brightness] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[decrement_brightness] using raw value: ${floatStr}`)
-			}
 			const brightness = this.getVariableValue('brightness')
 			let new_brightness = utils.decrement_float(brightness, floatStr)
 			const path = `${showcontrol_base_address}brightness`
@@ -373,14 +339,8 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
+		callback: async (event) => {
 			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[shift_volume] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[shift_volume] using raw value: ${floatStr}`)
-			}
 			const volume = this.getVariableValue('volume')
 			let new_volume = utils.shift ? utils.decrement_float(volume, floatStr) : utils.increment_float(volume, floatStr)
 			const path = `${showcontrol_base_address}volume`
@@ -407,14 +367,8 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
+		callback: async (event) => {
 			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[increment_volume] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[increment_volume] using raw value: ${floatStr}`)
-			}
 			const volume = this.getVariableValue('volume')
 			const new_volume = utils.increment_float(volume, floatStr)
 			const path = `${showcontrol_base_address}volume`
@@ -441,14 +395,8 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
+		callback: async (event) => {
 			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[decrement_volume] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[decrement_volume] using raw value: ${floatStr}`)
-			}
 			const volume = this.getVariableValue('volume')
 			const new_volume = utils.decrement_float(volume, floatStr)
 			const path = `${showcontrol_base_address}volume`
@@ -487,10 +435,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/blendmode`
-			const int = await this.parseVariablesInString(event.options.mode)
+			const int = event.options.mode
 
 			this.sendOscMessage(path, [
 				{
@@ -529,10 +477,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/brightness`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = event.options.float
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -578,11 +526,11 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
-			const channel = await this.parseVariablesInString(event.options.channel)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
+			const channel = event.options.channel
 			const path = `${base_address}${layer}/tint.${channel}`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = event.options.float
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -620,10 +568,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/speed`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = event.options.int
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -658,10 +606,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/mode`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = event.options.int
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
@@ -696,10 +644,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/at_end_point`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = event.options.int
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
@@ -737,10 +685,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/transition_time`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = event.options.int
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
@@ -779,10 +727,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/volume`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = event.options.float
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -821,10 +769,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/brightness_(shift)`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = event.options.float
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -863,10 +811,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/contrast_(scale)`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = event.options.float
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -905,10 +853,10 @@ exports.initActions = function () {
 			},
 		],
 		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/saturation_scale`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = event.options.float
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
@@ -951,14 +899,10 @@ exports.initActions = function () {
 				tooltip: 'Value to send. Supports variables.',
 			},
 		],
-		callback: async (action, context) => {
-			// Resolve variables
+		callback: async (action) => {
+			// Text options are prepared by Companion before action IPC.
 			let path = action.options.osc_path
 			let value = action.options.arg_value
-			if (context && context.parseVariablesInString) {
-				path = await context.parseVariablesInString(path)
-				value = await context.parseVariablesInString(value)
-			}
 			// Validate path
 			if (!/^\/.+/.test(path)) {
 				this.log('error', '[custom_osc] Invalid OSC path: ' + path)
