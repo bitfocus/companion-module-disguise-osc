@@ -59,7 +59,7 @@ The UI will now accept both direct numbers and variable patterns in relevant fie
 
 [^1]: Toggle shift inverts a boolean variable not available to the user. It provides increased functionality to shift aware actions, presets and feedbacks.
 
-[^2]: If shift is _false_ shift aware volume / brightness decrement the linked value by the user provided step value. If shift is _true_ shift aware volume/brightness increment the linked value by the user provided step value.
+[^2]: If shift is _false_ shift aware volume / brightness increment the linked value by the user provided step value. If shift is _true_ shift aware volume / brightness decrement the linked value by the user provided step value.
 
 **layer control**
 
