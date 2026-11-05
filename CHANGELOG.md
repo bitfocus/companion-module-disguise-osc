@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### Unreleased
+
+### Added
+
+- Send custom OSC message can now send no arguments, or integer parts such as `1.2.5` as separate arguments, the same way the Cue action does.
+
+### Fixed
+
+- Action fields now show a warning in the editor when a value is invalid.
+- Send custom OSC message no longer shortens bad numbers, such as `1.2.5` sent as `1.2` or `12abc` sent as `12`. It logs an error and sends nothing.
+
 #### 2.2.0 (2026-10-23)
 
 ### Changed

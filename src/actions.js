@@ -1,6 +1,42 @@
 const choices = require('./choices')
 const utils = require('./utils')
 
+const INT_MAX = 2147483647
+const INT_MIN = -2147483648
+
+// Builds the OSC arguments for the custom action. The whole value must be valid,
+// so a bad value is reported and not sent as a shortened number.
+function customOscArgs(argType, rawValue) {
+	const value = String(rawValue).trim()
+	switch (argType) {
+		case 'none':
+			return []
+		case 'int': {
+			const int = Number(value)
+			if (!/^[-+]?\d+$/.test(value) || int < INT_MIN || int > INT_MAX) {
+				return { error: 'Argument is not a valid integer: ' + value }
+			}
+			return [{ type: 'i', value: int }]
+		}
+		case 'float': {
+			const float = Number(value)
+			if (!/^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(value) || !Number.isFinite(float)) {
+				return { error: 'Argument is not a valid float: ' + value }
+			}
+			return [{ type: 'f', value: float }]
+		}
+		case 'int_parts': {
+			const parts = value.split('.').map(Number)
+			if (!/^\d+(?:\.\d+)*$/.test(value) || parts.some((part) => part > INT_MAX)) {
+				return { error: 'Argument is not valid integer parts: ' + value }
+			}
+			return parts.map((part) => ({ type: 'i', value: part }))
+		}
+		default:
+			return [{ type: 's', value: rawValue }]
+	}
+}
+
 exports.initActions = function () {
 	let self = this
 	let actions = {}
@@ -132,7 +168,7 @@ exports.initActions = function () {
 				label: 'Track ID (integer)',
 				id: 'int',
 				default: 1,
-				regex: /^[-+]?\d+$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d+$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -167,7 +203,7 @@ exports.initActions = function () {
 				label: 'Cue (integer parts or variable)',
 				id: 'int',
 				default: 1,
-				regex: /^\d+(?:\.\d+){0,2}$|^\$\(.+\)$/,
+				regex: '/^\\d+(?:\\.\\d+){0,2}$|^\\$\\(.+\\)$/',
 				useVariables: true,
 				tooltip: 'Enter 1 to 3 unsigned integers separated by dots, e.g. 1.2.5, or a variable with this value.',
 				error: 'Enter 1 to 3 unsigned integers separated by dots, or a variable with this value.',
@@ -207,7 +243,7 @@ exports.initActions = function () {
 				label: 'Float Cue (float or variable)',
 				id: 'float',
 				default: 1.0,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 				tooltip: 'Enter a float or a variable that resolves to a float.',
 				error: 'Please enter a valid float or variable that resolves to a float.',
@@ -269,7 +305,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -305,7 +341,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -339,7 +375,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -373,7 +409,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -407,7 +443,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -441,7 +477,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -528,7 +564,7 @@ exports.initActions = function () {
 				default: 1,
 				max: 1,
 				min: 0,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -577,7 +613,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -619,7 +655,7 @@ exports.initActions = function () {
 				default: 0,
 				max: 4,
 				min: -4,
-				regex: /^[-+]?\d+$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d+$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -736,7 +772,7 @@ exports.initActions = function () {
 				default: 0,
 				max: 10,
 				min: 0,
-				regex: /^[-+]?\d+$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d+$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -778,7 +814,7 @@ exports.initActions = function () {
 				max: 1,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -820,7 +856,7 @@ exports.initActions = function () {
 				max: 1,
 				min: -1,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -862,7 +898,7 @@ exports.initActions = function () {
 				max: 2,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -904,7 +940,7 @@ exports.initActions = function () {
 				max: 4,
 				min: 0,
 				step: 0.01,
-				regex: /^[-+]?\d*\.?\d+(e[-+]?\d+)?$|^\$\(.+\)$/,
+				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
 				useVariables: true,
 			},
 		],
@@ -931,7 +967,7 @@ exports.initActions = function () {
 				id: 'osc_path',
 				default: '/d3/custom/path',
 				useVariables: true,
-				regex: /^\/.+/, // must start with '/'
+				regex: '/^\\/.+|^\\$\\(.+\\)$/', // a path starting with '/', or a variable
 				tooltip: 'OSC path, e.g. /d3/custom/path. Supports variables.',
 			},
 			{
@@ -943,6 +979,8 @@ exports.initActions = function () {
 					{ id: 'string', label: 'String' },
 					{ id: 'int', label: 'Integer' },
 					{ id: 'float', label: 'Float' },
+					{ id: 'int_parts', label: 'Integer parts, e.g. 1.2.5' },
+					{ id: 'none', label: 'No arguments' },
 				],
 			},
 			{
@@ -951,8 +989,9 @@ exports.initActions = function () {
 				id: 'arg_value',
 				default: '',
 				useVariables: true,
-				regex: /.*/, // backend validation only
+				regex: '/.*/', // checked when sent, as the type decides what is valid
 				tooltip: 'Value to send. Supports variables.',
+				isVisible: (options) => options.arg_type !== 'none',
 			},
 		],
 		callback: async (action, context) => {
@@ -968,26 +1007,12 @@ exports.initActions = function () {
 				this.log('error', '[custom_osc] Invalid OSC path: ' + path)
 				return
 			}
-			// Type conversion
-			let argType = action.options.arg_type
-			let oscArg = { type: 's', value: value }
-			if (argType === 'int') {
-				const intVal = parseInt(value)
-				if (isNaN(intVal)) {
-					this.log('error', '[custom_osc] Argument is not a valid integer: ' + value)
-					return
-				}
-				oscArg = { type: 'i', value: intVal }
-			} else if (argType === 'float') {
-				const floatVal = parseFloat(value)
-				if (isNaN(floatVal)) {
-					this.log('error', '[custom_osc] Argument is not a valid float: ' + value)
-					return
-				}
-				oscArg = { type: 'f', value: floatVal }
+			const args = customOscArgs(action.options.arg_type, value)
+			if (args.error) {
+				this.log('error', '[custom_osc] ' + args.error)
+				return
 			}
-			// Send OSC message
-			this.sendOscMessage(path, [oscArg])
+			this.sendOscMessage(path, args)
 		},
 	}
 	this.setActionDefinitions(actions)

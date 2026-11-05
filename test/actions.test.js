@@ -22,6 +22,25 @@ function createActions(variables = {}, parseVariablesInString = async (text) => 
 	return { actions: definitions, cue: definitions.cue, messages, logs, feedbackChecks }
 }
 
+// Companion only accepts a field regex as a string in the form '/pattern/flags'.
+function compileFieldRegex(regex) {
+	assert.equal(typeof regex, 'string')
+	const match = regex.match(/^\/(.+)\/([a-z]*)$/)
+	assert.ok(match, regex)
+	return new RegExp(match[1], match[2])
+}
+
+test('Every action field regex is a string Companion can compile', () => {
+	const { actions } = createActions()
+	const fields = Object.values(actions).flatMap(({ options = [] }) =>
+		options.filter(({ regex }) => regex !== undefined),
+	)
+	assert.ok(fields.length > 0)
+	for (const { regex } of fields) {
+		compileFieldRegex(regex)
+	}
+})
+
 test('Cue sends 1 to 3 parts as separate OSC integers', async () => {
 	const { cue, messages } = createActions()
 	const cases = [
@@ -115,7 +134,7 @@ test('Cue rejects an invalid value from a variable', async () => {
 
 test('Cue input accepts multipart numbers and variables', () => {
 	const { cue } = createActions()
-	const { regex } = cue.options.find(({ id }) => id === 'int')
+	const regex = compileFieldRegex(cue.options.find(({ id }) => id === 'int').regex)
 	for (const value of ['0', '1', '1.2', '1.2.5', '$(internal:cue_number)']) {
 		assert.ok(regex.test(value), value)
 	}
@@ -220,8 +239,11 @@ for (const [argType, input, type, value] of [
 	['string', 'Fade up', 's', 'Fade up'],
 	['int', '0', 'i', 0],
 	['float', '0.25', 'f', 0.25],
+	['int', ' -5 ', 'i', -5],
+	['float', '1e3', 'f', 1000],
+	['float', '.5', 'f', 0.5],
 ]) {
-	test(`Custom OSC sends a resolved path and ${argType} value`, async () => {
+	test(`Custom OSC sends a resolved path and ${argType} value ${JSON.stringify(input)}`, async () => {
 		const { actions, messages } = createActions()
 		await actions.custom_osc.callback(
 			{ options: { osc_path: '$(internal:path)', arg_type: argType, arg_value: '$(internal:value)' } },
@@ -242,6 +264,19 @@ for (const [path, argType, value] of [
 	['', 'string', 'Fade up'],
 	['/d3/status', 'int', 'invalid'],
 	['/d3/status', 'float', 'invalid'],
+	['/d3/status', 'int', '1.2'],
+	['/d3/status', 'int', '12abc'],
+	['/d3/status', 'int', ''],
+	['/d3/status', 'int', '2147483648'],
+	['/d3/status', 'float', '1.2.5'],
+	['/d3/status', 'float', '12abc'],
+	['/d3/status', 'float', ''],
+	['/d3/status', 'float', '1e999'],
+	['/d3/status', 'int_parts', 'abc'],
+	['/d3/status', 'int_parts', ''],
+	['/d3/status', 'int_parts', '1..2'],
+	['/d3/status', 'int_parts', '1.-2'],
+	['/d3/status', 'int_parts', '1.2147483648'],
 ]) {
 	test(`Custom OSC rejects path=${JSON.stringify(path)}, type=${argType}, value=${value}`, async () => {
 		const { actions, messages, logs } = createActions()
@@ -250,3 +285,47 @@ for (const [path, argType, value] of [
 		assert.equal(logs.filter(({ level }) => level === 'error').length, 1)
 	})
 }
+
+for (const [input, values] of [
+	['1', [1]],
+	['1.2.5', [1, 2, 5]],
+	[' 001.0.2 ', [1, 0, 2]],
+]) {
+	test(`Custom OSC sends integer parts ${JSON.stringify(input)} as separate arguments`, async () => {
+		const { actions, messages } = createActions()
+		await actions.custom_osc.callback(
+			{ options: { osc_path: '/d3/showcontrol/cue', arg_type: 'int_parts', arg_value: '$(internal:cue)' } },
+			{ parseVariablesInString: async (text) => (text === '$(internal:cue)' ? input : text) },
+		)
+		assert.deepEqual(messages, [{ path: '/d3/showcontrol/cue', args: values.map((value) => ({ type: 'i', value })) }])
+	})
+}
+
+test('Custom OSC sends no arguments and ignores any leftover value', async () => {
+	const { actions, messages, logs } = createActions()
+	await actions.custom_osc.callback({
+		options: { osc_path: '/d3/showcontrol/play', arg_type: 'none', arg_value: 'left over' },
+	})
+	assert.deepEqual(messages, [{ path: '/d3/showcontrol/play', args: [] }])
+	assert.deepEqual(logs, [])
+})
+
+test('Custom OSC hides the value field only when sending no arguments', () => {
+	const { actions } = createActions()
+	const { isVisible } = actions.custom_osc.options.find(({ id }) => id === 'arg_value')
+	assert.equal(isVisible({ arg_type: 'none' }), false)
+	for (const argType of ['string', 'int', 'float', 'int_parts']) {
+		assert.equal(isVisible({ arg_type: argType }), true)
+	}
+})
+
+test('Custom OSC path field accepts a path or a variable', () => {
+	const { actions } = createActions()
+	const regex = compileFieldRegex(actions.custom_osc.options.find(({ id }) => id === 'osc_path').regex)
+	for (const value of ['/d3/status', '$(internal:path)']) {
+		assert.ok(regex.test(value), value)
+	}
+	for (const value of ['', '/', 'd3/status']) {
+		assert.ok(!regex.test(value), value)
+	}
+})
