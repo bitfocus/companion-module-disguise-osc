@@ -27,8 +27,8 @@ class disguiseOSCInstance extends InstanceBase {
 		this.config = config
 
 		self.initActions()
-		self.initPresets()
 		self.initFeedbacks()
+		self.initPresets()
 		self.initVariables()
 
 		osc_server.connect(this)
