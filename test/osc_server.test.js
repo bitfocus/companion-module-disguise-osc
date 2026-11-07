@@ -9,6 +9,7 @@ const oscServer = require('../src/osc_server')
 
 async function connect(t) {
 	const port = new EventEmitter()
+	port.socket = new EventEmitter()
 	port.open = t.mock.fn()
 	port.close = t.mock.fn()
 	const constructor = t.mock.method(osc, 'UDPPort', function () {
@@ -103,17 +104,17 @@ test('OSC receiver reports other UDP errors', async (t) => {
 	assert.equal(instance.log.mock.calls[0].arguments[0], 'error')
 })
 
-test('OSC receiver waits for the UDP port to close', async (t) => {
+test('OSC receiver waits for the UDP socket to close', async (t) => {
 	const { server, port } = await connect(t)
 	let closed = false
 	const closing = server.close().then(() => (closed = true))
 	try {
 		assert.equal(port.close.mock.callCount(), 1)
-		// osc.UDPPort.close() returns undefined and later emits a close event.
+		// osc.UDPPort.close() returns undefined. The socket later emits close.
 		await new Promise((resolve) => setImmediate(resolve))
 		assert.equal(closed, false, 'close resolved before the UDP close event')
 	} finally {
-		port.emit('close')
+		port.socket.emit('close')
 		await closing
 	}
 })
@@ -123,19 +124,41 @@ test('OSC receiver can close before a UDP port exists', async () => {
 	await assert.doesNotReject(server.close())
 })
 
+test('OSC receiver can close before a UDP socket exists', async (t) => {
+	const { server, port } = await connect(t)
+	delete port.socket
+	await assert.doesNotReject(server.close())
+	assert.equal(port.close.mock.callCount(), 0)
+	assert.equal(server.udpPort, undefined)
+})
+
+test('OSC receiver closes the UDP port only once across repeated close calls', async (t) => {
+	const { server, port } = await connect(t)
+	const closing = server.close()
+	try {
+		assert.equal(server.udpPort, undefined)
+		await assert.doesNotReject(server.close())
+	} finally {
+		port.socket.emit('close')
+		await closing
+	}
+	await assert.doesNotReject(server.close())
+	assert.equal(port.close.mock.callCount(), 1)
+})
+
 test('OSC receiver registers for closure before calling the UDP close method', async (t) => {
 	const { server, port } = await connect(t)
 	port.close.mock.mockImplementation(() => {
-		port.emit('close')
+		port.socket.emit('close')
 	})
 	await server.close()
 	assert.equal(port.close.mock.callCount(), 1)
 })
 
-test('OSC receiver rejects closure when the UDP port reports an error', async (t) => {
+test('OSC receiver rejects closure when the UDP socket reports an error', async (t) => {
 	const { server, port } = await connect(t)
 	const error = new Error('UDP close failed')
 	const rejection = assert.rejects(server.close(), error)
-	port.emit('error', error)
+	port.socket.emit('error', error)
 	await rejection
 })

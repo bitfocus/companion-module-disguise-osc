@@ -10,9 +10,10 @@ const osc_server = {
 
 	close: async function () {
 		const port = this.udpPort
-		if (!port) return
+		this.udpPort = undefined
+		if (!port?.socket) return
 
-		const closed = once(port, 'close')
+		const closed = once(port.socket, 'close')
 		port.close()
 		await closed
 	},
