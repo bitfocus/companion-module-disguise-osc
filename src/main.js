@@ -34,24 +34,23 @@ class disguiseOSCInstance extends InstanceBase {
 		osc_server.connect(this)
 		this.updateStatus('ok')
 
-		this.blink_button = setInterval(() => {
+		this.blink_button = true
+		this.blinkInterval = setInterval(() => {
 			this.blink_button = !this.blink_button
 
 			this.checkFeedbacks()
 		}, 500)
-
-		await this.configUpdated(config)
 	}
 	// When module gets deleted
 	async destroy() {
 		this.log('debug', 'destroy')
-		osc_server.close(this)
-		delete osc_server(this)
+		clearInterval(this.blinkInterval)
+		await osc_server.close()
 	}
 
 	async configUpdated(config) {
 		this.log('debug', 'config updated')
-		osc_server.close(this)
+		await osc_server.close()
 
 		this.config = config
 
