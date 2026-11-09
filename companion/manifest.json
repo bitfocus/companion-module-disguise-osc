@@ -1,4 +1,5 @@
 {
+	"type": "connection",
 	"id": "disguise-osc",
 	"name": "disguise-osc",
 	"shortname": "d3-osc",

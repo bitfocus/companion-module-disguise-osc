@@ -1,8 +1,22 @@
-const choices = require('./choices')
-const utils = require('./utils')
+import choices from './choices.js'
+import utils from './utils.js'
 
 const INT_MAX = 2147483647
 const INT_MIN = -2147483648
+
+// Whole-value number checks. Companion passes bad values through (allowInvalidValues), so
+// these stop parseInt and parseFloat from sending part of a value, such as 12 for 12abc.
+function parseWholeInt(rawValue) {
+	const text = String(rawValue ?? '').trim()
+	const int = Number(text)
+	return /^[-+]?\d+$/.test(text) && int >= INT_MIN && int <= INT_MAX ? int : null
+}
+
+function parseWholeFloat(rawValue) {
+	const text = String(rawValue ?? '').trim()
+	const float = Number(text)
+	return /^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(text) && Number.isFinite(float) ? float : null
+}
 
 // Builds the OSC arguments for the custom action. The whole value must be valid,
 // so a bad value is reported and not sent as a shortened number.
@@ -12,17 +26,13 @@ function customOscArgs(argType, rawValue) {
 		case 'none':
 			return []
 		case 'int': {
-			const int = Number(value)
-			if (!/^[-+]?\d+$/.test(value) || int < INT_MIN || int > INT_MAX) {
-				return { error: 'Argument is not a valid integer: ' + value }
-			}
+			const int = parseWholeInt(value)
+			if (int === null) return { error: 'Argument is not a valid integer: ' + value }
 			return [{ type: 'i', value: int }]
 		}
 		case 'float': {
-			const float = Number(value)
-			if (!/^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(value) || !Number.isFinite(float)) {
-				return { error: 'Argument is not a valid float: ' + value }
-			}
+			const float = parseWholeFloat(value)
+			if (float === null) return { error: 'Argument is not a valid float: ' + value }
 			return [{ type: 'f', value: float }]
 		}
 		case 'int_parts': {
@@ -37,7 +47,7 @@ function customOscArgs(argType, rawValue) {
 	}
 }
 
-exports.initActions = function () {
+export function initActions() {
 	let self = this
 	let actions = {}
 
@@ -50,7 +60,7 @@ exports.initActions = function () {
 		options: [],
 		callback: () => {
 			utils.shift = !utils.shift
-			self.checkFeedbacks()
+			self.checkAllFeedbacks()
 		},
 	}
 	// showcontrol actions
@@ -146,12 +156,9 @@ exports.initActions = function () {
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
+		callback: (event) => {
 			const path = `${showcontrol_base_address}trackname`
-			let trackName = event.options.string
-			if (context && context.parseVariablesInString) {
-				trackName = await context.parseVariablesInString(trackName)
-			}
+			const trackName = event.options.string
 			this.sendOscMessage(path, [
 				{
 					type: 's',
@@ -167,24 +174,17 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Track ID (integer)',
 				id: 'int',
-				default: 1,
+				default: '1',
 				regex: '/^[-+]?\\d+$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (action, context) => {
+		callback: (action) => {
 			const path = `${showcontrol_base_address}trackid`
-			let intStr = action.options.int
-			if (context && context.parseVariablesInString) {
-				intStr = await context.parseVariablesInString(intStr)
-				this.log('debug', `[trackid] parsed variable: ${intStr}`)
-			} else {
-				this.log('debug', `[trackid] using raw value: ${intStr}`)
-			}
-			const intVal = parseInt(intStr)
-			this.log('debug', `[trackid] final int value: ${intVal}`)
-			if (isNaN(intVal)) {
-				this.log('debug', '[trackid] Not a number, aborting')
+			const intVal = parseWholeInt(action.options.int)
+			if (intVal === null) {
+				this.log('error', `[trackid] Enter a whole number: ${action.options.int}`)
 				return
 			}
 			this.sendOscMessage(path, [
@@ -202,23 +202,17 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Cue (integer parts or variable)',
 				id: 'int',
-				default: 1,
+				default: '1',
 				regex: '/^\\d+(?:\\.\\d+){0,2}$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 				tooltip: 'Enter 1 to 3 unsigned integers separated by dots, e.g. 1.2.5, or a variable with this value.',
 				error: 'Enter 1 to 3 unsigned integers separated by dots, or a variable with this value.',
 			},
 		],
-		callback: async (action, context) => {
+		callback: (action) => {
 			const path = `${showcontrol_base_address}cue`
-			// Always resolve variables using parseVariablesInString for compatibility
-			let intStr = action.options.int
-			if (context && context.parseVariablesInString) {
-				intStr = await context.parseVariablesInString(intStr)
-				this.log('debug', `[cue] parsed variable: ${intStr}`)
-			} else {
-				this.log('debug', `[cue] using raw value: ${intStr}`)
-			}
+			const intStr = action.options.int
 			const cue = String(intStr).trim()
 			if (!/^\d+(?:\.\d+){0,2}$/.test(cue)) {
 				this.log('error', '[cue] Enter 1 to 3 unsigned integers separated by dots.')
@@ -242,21 +236,19 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Float Cue (float or variable)',
 				id: 'float',
-				default: 1.0,
+				default: '1.0',
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 				tooltip: 'Enter a float or a variable that resolves to a float.',
 				error: 'Please enter a valid float or variable that resolves to a float.',
 			},
 		],
-		callback: async (action, context) => {
+		callback: (action) => {
 			const path = `${showcontrol_base_address}floatcue`
-			let floatStr = action.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-			}
-			const floatVal = parseFloat(floatStr)
-			if (isNaN(floatVal)) {
+			const floatVal = parseWholeFloat(action.options.float)
+			if (floatVal === null) {
+				this.log('error', `[floatcue] Enter a number: ${action.options.float}`)
 				return
 			}
 			this.sendOscMessage(path, [
@@ -301,26 +293,25 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Step (float)',
 				id: 'float',
-				default: 0.01,
+				default: '0.01',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
-			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[shift_brightness] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[shift_brightness] using raw value: ${floatStr}`)
+		callback: (event) => {
+			const step = parseWholeFloat(event.options.float)
+			if (step === null) {
+				this.log('error', `[shift_brightness] Enter a number for the step: ${event.options.float}`)
+				return
 			}
 			const brightness = this.getVariableValue('brightness')
 			let new_brightness = utils.shift
-				? utils.decrement_float(brightness, floatStr)
-				: utils.increment_float(brightness, floatStr)
+				? utils.decrement_float(brightness, step)
+				: utils.increment_float(brightness, step)
 			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
@@ -337,24 +328,23 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Step (float)',
 				id: 'float',
-				default: 0.01,
+				default: '0.01',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
-			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[increment_brightness] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[increment_brightness] using raw value: ${floatStr}`)
+		callback: (event) => {
+			const step = parseWholeFloat(event.options.float)
+			if (step === null) {
+				this.log('error', `[increment_brightness] Enter a number for the step: ${event.options.float}`)
+				return
 			}
 			const brightness = this.getVariableValue('brightness')
-			const new_brightness = utils.increment_float(brightness, floatStr)
+			const new_brightness = utils.increment_float(brightness, step)
 			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
@@ -371,24 +361,23 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Step (float)',
 				id: 'float',
-				default: 0.01,
+				default: '0.01',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
-			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[decrement_brightness] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[decrement_brightness] using raw value: ${floatStr}`)
+		callback: (event) => {
+			const step = parseWholeFloat(event.options.float)
+			if (step === null) {
+				this.log('error', `[decrement_brightness] Enter a number for the step: ${event.options.float}`)
+				return
 			}
 			const brightness = this.getVariableValue('brightness')
-			let new_brightness = utils.decrement_float(brightness, floatStr)
+			let new_brightness = utils.decrement_float(brightness, step)
 			const path = `${showcontrol_base_address}brightness`
 			this.sendOscMessage(path, [
 				{
@@ -405,24 +394,23 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Step (float)',
 				id: 'float',
-				default: 0.01,
+				default: '0.01',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
-			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[shift_volume] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[shift_volume] using raw value: ${floatStr}`)
+		callback: (event) => {
+			const step = parseWholeFloat(event.options.float)
+			if (step === null) {
+				this.log('error', `[shift_volume] Enter a number for the step: ${event.options.float}`)
+				return
 			}
 			const volume = this.getVariableValue('volume')
-			let new_volume = utils.shift ? utils.decrement_float(volume, floatStr) : utils.increment_float(volume, floatStr)
+			let new_volume = utils.shift ? utils.decrement_float(volume, step) : utils.increment_float(volume, step)
 			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
@@ -439,24 +427,23 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Step (float)',
 				id: 'float',
-				default: 0.01,
+				default: '0.01',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
-			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[increment_volume] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[increment_volume] using raw value: ${floatStr}`)
+		callback: (event) => {
+			const step = parseWholeFloat(event.options.float)
+			if (step === null) {
+				this.log('error', `[increment_volume] Enter a number for the step: ${event.options.float}`)
+				return
 			}
 			const volume = this.getVariableValue('volume')
-			const new_volume = utils.increment_float(volume, floatStr)
+			const new_volume = utils.increment_float(volume, step)
 			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
@@ -473,24 +460,23 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Step (float)',
 				id: 'float',
-				default: 0.01,
+				default: '0.01',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event, context) => {
-			let floatStr = event.options.float
-			if (context && context.parseVariablesInString) {
-				floatStr = await context.parseVariablesInString(floatStr)
-				this.log('debug', `[decrement_volume] parsed variable: ${floatStr}`)
-			} else {
-				this.log('debug', `[decrement_volume] using raw value: ${floatStr}`)
+		callback: (event) => {
+			const step = parseWholeFloat(event.options.float)
+			if (step === null) {
+				this.log('error', `[decrement_volume] Enter a number for the step: ${event.options.float}`)
+				return
 			}
 			const volume = this.getVariableValue('volume')
-			const new_volume = utils.decrement_float(volume, floatStr)
+			const new_volume = utils.decrement_float(volume, step)
 			const path = `${showcontrol_base_address}volume`
 			this.sendOscMessage(path, [
 				{
@@ -520,17 +506,18 @@ exports.initActions = function () {
 			},
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				id: 'mode',
 				label: 'Blendmode:',
 				default: '00',
 				choices: choices.BLENDMODE,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/blendmode`
-			const int = await this.parseVariablesInString(event.options.mode)
+			const int = event.options.mode
 
 			this.sendOscMessage(path, [
 				{
@@ -561,22 +548,27 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Brightness (float)',
 				id: 'float',
-				default: 1,
+				default: '1',
 				max: 1,
 				min: 0,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/brightness`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = parseWholeFloat(event.options.float)
+			if (float === null) {
+				this.log('error', `[layer_brightness] Enter a number: ${event.options.float}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseFloat(float),
+					value: float,
 				},
 			])
 		},
@@ -600,6 +592,7 @@ exports.initActions = function () {
 			},
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				id: 'channel',
 				label: 'Channel:',
 				default: 'r',
@@ -609,24 +602,29 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Tint (float)',
 				id: 'float',
-				default: 1,
+				default: '1',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
-			const channel = await this.parseVariablesInString(event.options.channel)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
+			const channel = event.options.channel
 			const path = `${base_address}${layer}/tint.${channel}`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = parseWholeFloat(event.options.float)
+			if (float === null) {
+				this.log('error', `[layer_tint] Enter a number: ${event.options.float}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseFloat(float),
+					value: float,
 				},
 			])
 		},
@@ -652,22 +650,27 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Speed (int)',
 				id: 'int',
-				default: 0,
+				default: '0',
 				max: 4,
 				min: -4,
 				regex: '/^[-+]?\\d+$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/speed`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = parseWholeInt(event.options.int)
+			if (int === null) {
+				this.log('error', `[layer_speed] Enter a whole number: ${event.options.int}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseInt(int),
+					value: int,
 				},
 			])
 		},
@@ -691,21 +694,26 @@ exports.initActions = function () {
 			},
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				id: 'int',
 				label: 'Mode:',
 				default: '1',
 				choices: choices.MODE,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/mode`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = parseWholeInt(event.options.int)
+			if (int === null) {
+				this.log('error', `[layer_mode] Enter a whole number: ${event.options.int}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
-					value: parseInt(int),
+					value: int,
 				},
 			])
 		},
@@ -729,21 +737,26 @@ exports.initActions = function () {
 			},
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				id: 'int',
 				label: 'At end point:',
 				default: '0',
 				choices: choices.AT_END_POINT,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/at_end_point`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = parseWholeInt(event.options.int)
+			if (int === null) {
+				this.log('error', `[layer_at_end_point] Enter a whole number: ${event.options.int}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
-					value: parseInt(int),
+					value: int,
 				},
 			])
 		},
@@ -769,22 +782,27 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Transition time (int):',
 				id: 'int',
-				default: 0,
+				default: '0',
 				max: 10,
 				min: 0,
 				regex: '/^[-+]?\\d+$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/transition_time`
-			const int = await this.parseVariablesInString(event.options.int)
+			const int = parseWholeInt(event.options.int)
+			if (int === null) {
+				this.log('error', `[layer_transition_time] Enter a whole number: ${event.options.int}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'i',
-					value: parseInt(int),
+					value: int,
 				},
 			])
 		},
@@ -810,23 +828,28 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Volume (float):',
 				id: 'float',
-				default: 1,
+				default: '1',
 				max: 1,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/volume`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = parseWholeFloat(event.options.float)
+			if (float === null) {
+				this.log('error', `[layer_volume] Enter a number: ${event.options.float}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseFloat(float),
+					value: float,
 				},
 			])
 		},
@@ -852,23 +875,28 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Brightness (shift) (float):',
 				id: 'float',
-				default: 0,
+				default: '0',
 				max: 1,
 				min: -1,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/brightness_(shift)`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = parseWholeFloat(event.options.float)
+			if (float === null) {
+				this.log('error', `[layer_brightness_shift] Enter a number: ${event.options.float}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseFloat(float),
+					value: float,
 				},
 			])
 		},
@@ -894,23 +922,28 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Contrast scale (float):',
 				id: 'float',
-				default: 1,
+				default: '1',
 				max: 2,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/contrast_(scale)`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = parseWholeFloat(event.options.float)
+			if (float === null) {
+				this.log('error', `[layer_contrast_scale] Enter a number: ${event.options.float}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseFloat(float),
+					value: float,
 				},
 			])
 		},
@@ -936,23 +969,28 @@ exports.initActions = function () {
 				type: 'textinput',
 				label: 'Saturation scale (float):',
 				id: 'float',
-				default: 1,
+				default: '1',
 				max: 4,
 				min: 0,
 				step: 0.01,
 				regex: '/^[-+]?\\d*\\.?\\d+(e[-+]?\\d+)?$|^\\$\\(.+\\)$/',
+				allowInvalidValues: true,
 				useVariables: true,
 			},
 		],
-		callback: async (event) => {
-			const base_address = await this.parseVariablesInString(event.options.base_address)
-			const layer = await this.parseVariablesInString(event.options.layer_name)
+		callback: (event) => {
+			const base_address = event.options.base_address
+			const layer = event.options.layer_name
 			const path = `${base_address}${layer}/saturation_scale`
-			const float = await this.parseVariablesInString(event.options.float)
+			const float = parseWholeFloat(event.options.float)
+			if (float === null) {
+				this.log('error', `[layer_saturation_scale] Enter a number: ${event.options.float}`)
+				return
+			}
 			this.sendOscMessage(path, [
 				{
 					type: 'f',
-					value: parseFloat(float),
+					value: float,
 				},
 			])
 		},
@@ -968,10 +1006,12 @@ exports.initActions = function () {
 				default: '/d3/custom/path',
 				useVariables: true,
 				regex: '/^\\/.+|^\\$\\(.+\\)$/', // a path starting with '/', or a variable
+				allowInvalidValues: true,
 				tooltip: 'OSC path, e.g. /d3/custom/path. Supports variables.',
 			},
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				label: 'Argument Type',
 				id: 'arg_type',
 				default: 'string',
@@ -990,18 +1030,14 @@ exports.initActions = function () {
 				default: '',
 				useVariables: true,
 				regex: '/.*/', // checked when sent, as the type decides what is valid
+				allowInvalidValues: true,
 				tooltip: 'Value to send. Supports variables.',
-				isVisible: (options) => options.arg_type !== 'none',
+				isVisibleExpression: "$(options:arg_type) != 'none'",
 			},
 		],
-		callback: async (action, context) => {
-			// Resolve variables
-			let path = action.options.osc_path
-			let value = action.options.arg_value
-			if (context && context.parseVariablesInString) {
-				path = await context.parseVariablesInString(path)
-				value = await context.parseVariablesInString(value)
-			}
+		callback: (action) => {
+			const path = action.options.osc_path
+			const value = action.options.arg_value
 			// Validate path
 			if (!/^\/.+/.test(path)) {
 				this.log('error', '[custom_osc] Invalid OSC path: ' + path)

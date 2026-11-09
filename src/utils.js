@@ -1,4 +1,4 @@
-const { combineRgb } = require('@companion-module/base')
+import { combineRgb } from '@companion-module/base'
 
 const utils = {
 	// boolean to assist with changing numeric values in both directions on a single button
@@ -192,4 +192,4 @@ const utils = {
 	FireBrick: combineRgb(178, 34, 34),
 }
 
-module.exports = utils
+export default utils

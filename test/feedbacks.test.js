@@ -1,9 +1,9 @@
 /* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=20.0.0" }] */
-const assert = require('node:assert/strict')
-const { test } = require('node:test')
-const { initFeedbacks } = require('../src/feedbacks')
-const oscServer = require('../src/osc_server')
-const utils = require('../src/utils')
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import { initFeedbacks } from '../src/feedbacks.js'
+import oscServer from '../src/osc_server.js'
+import utils from '../src/utils.js'
 
 function createFeedbacks(variables = {}) {
 	let feedbacks
@@ -26,19 +26,23 @@ function customFeedback(t, args) {
 	const { feedbacks, logs } = createFeedbacks()
 	return {
 		logs,
-		compare: (options = {}, context) =>
-			feedbacks.custom_osc_feedback.callback(
-				{
-					options: {
-						d3_osc_path: '/d3/fadestatus',
-						expected_value: 'Fade up',
-						comparison: 'equals',
-						value_type: 'string',
-						...options,
-					},
+		// On API 2 Companion resolves variables before calling the callback, so the tests do the same.
+		compare: async (options = {}, context) => {
+			const event = {
+				options: {
+					d3_osc_path: '/d3/fadestatus',
+					expected_value: 'Fade up',
+					comparison: 'equals',
+					value_type: 'string',
+					...options,
 				},
-				context,
-			),
+			}
+			if (context) {
+				event.options.d3_osc_path = await context.parseVariablesInString(event.options.d3_osc_path)
+				event.options.expected_value = await context.parseVariablesInString(event.options.expected_value)
+			}
+			return feedbacks.custom_osc_feedback.callback(event)
+		},
 	}
 }
 

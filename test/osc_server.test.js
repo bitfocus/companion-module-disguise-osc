@@ -1,11 +1,11 @@
 /* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=20.0.0" }] */
-const assert = require('node:assert/strict')
-const { createSocket } = require('node:dgram')
-const { EventEmitter, once } = require('node:events')
-const { test } = require('node:test')
-const { InstanceStatus } = require('@companion-module/base')
-const osc = require('osc')
-const oscServer = require('../src/osc_server')
+import assert from 'node:assert/strict'
+import { createSocket } from 'node:dgram'
+import { EventEmitter, once } from 'node:events'
+import { test } from 'node:test'
+import { InstanceStatus } from '@companion-module/base'
+import osc from 'osc'
+import oscServer from '../src/osc_server.js'
 
 async function connect(t) {
 	const port = new EventEmitter()
@@ -33,6 +33,41 @@ test('OSC receiver opens the configured port with typed arguments', async (t) =>
 	assert.deepEqual(constructor.mock.calls[0].arguments, [{ localAddress: '0.0.0.0', localPort: 7400, metadata: true }])
 	assert.equal(port.open.mock.callCount(), 1)
 })
+
+for (const [value, expected] of [
+	['7400', 7400],
+	[' 7400 ', 7400],
+	[1, 1],
+	[65535, 65535],
+]) {
+	test(`OSC receiver accepts receive port ${JSON.stringify(value)}`, async (t) => {
+		const constructor = t.mock.method(osc, 'UDPPort', function () {
+			const port = new EventEmitter()
+			port.open = () => {}
+			return port
+		})
+		const instance = { config: { recieve_port: value }, updateStatus: t.mock.fn(), log: t.mock.fn() }
+		await { ...oscServer }.connect(instance)
+		assert.equal(constructor.mock.calls[0].arguments[0].localPort, expected)
+		assert.equal(instance.updateStatus.mock.callCount(), 0)
+	})
+}
+
+for (const value of ['', '   ', 'abc', '7400abc', 7400.5, '7400.5', 0, 65536, 70000, -1, null, undefined]) {
+	test(`OSC receiver reports bad configuration for receive port ${JSON.stringify(value)}`, async (t) => {
+		const constructor = t.mock.method(osc, 'UDPPort', function () {
+			throw new Error('a UDP port must not be created')
+		})
+		const instance = { config: { recieve_port: value }, updateStatus: t.mock.fn(), log: t.mock.fn() }
+		const server = { ...oscServer, udpPort: undefined }
+		await assert.doesNotReject(server.connect(instance))
+		assert.equal(constructor.mock.callCount(), 0)
+		assert.equal(server.udpPort, undefined)
+		assert.equal(instance.updateStatus.mock.calls[0].arguments[0], InstanceStatus.BadConfig)
+		assert.equal(instance.log.mock.calls[0].arguments[0], 'error')
+		await assert.doesNotReject(server.close())
+	})
+}
 
 test('OSC receiver reports ready status', async (t) => {
 	const { port, instance } = await connect(t)

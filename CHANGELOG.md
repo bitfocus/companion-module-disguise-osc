@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. Dates are d
 
 #### Unreleased
 
+### Changed
+
+- Moved to Companion module API 2.1. Companion now resolves variables before the module runs.
+- Number fields that hold a bad value now log which action failed and send nothing, including values from a variable. Partly valid values such as `12abc` are no longer sent as `12`.
+
 ### Added
 
 - Send custom OSC message can now send no arguments, or integer parts such as `1.2.5` as separate arguments, the same way the Cue action does.
@@ -12,6 +17,8 @@ All notable changes to this project will be documented in this file. Dates are d
 
 - Action fields now show a warning in the editor when a value is invalid.
 - Send custom OSC message no longer shortens bad numbers, such as `1.2.5` sent as `1.2` or `12abc` sent as `12`. It logs an error and sends nothing.
+- A bad Receive Port now shows Bad configuration. It used to listen on the wrong port and report Connected.
+- The port-in-use message now names the port instead of showing `undefined`.
 
 #### 2.2.0 (2026-10-23)
 

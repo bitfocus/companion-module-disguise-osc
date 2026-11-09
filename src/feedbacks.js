@@ -1,10 +1,10 @@
-const osc_server = require('./osc_server')
-const choices = require('./choices')
-const utils = require('./utils')
-const icons = require('./icons')
-const { combineRgb } = require('@companion-module/base')
+import osc_server from './osc_server.js'
+import choices from './choices.js'
+import utils from './utils.js'
+import icons from './icons.js'
+import { combineRgb } from '@companion-module/base'
 
-exports.initFeedbacks = function () {
+export function initFeedbacks() {
 	let feedbacks = {}
 
 	feedbacks['decrease_brightness'] = {
@@ -101,6 +101,7 @@ exports.initFeedbacks = function () {
 		options: [
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				id: 'mode',
 				label: 'Playmode :',
 				default: '00',
@@ -195,6 +196,7 @@ exports.initFeedbacks = function () {
 			},
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				id: 'comparison',
 				label: 'Comparison Type',
 				default: 'equals',
@@ -207,6 +209,7 @@ exports.initFeedbacks = function () {
 			},
 			{
 				type: 'dropdown',
+				disableAutoExpression: true,
 				id: 'value_type',
 				label: 'Value Type',
 				default: 'string',
@@ -218,20 +221,9 @@ exports.initFeedbacks = function () {
 				tooltip: 'Type of value for validation',
 			},
 		],
-		callback: async (feedback, context) => {
-			// Use only the parseVariables or parseVariablesInString provided to the callback
-			let d3OscPath, expectedValue
-			try {
-				d3OscPath = feedback.options.d3_osc_path
-				expectedValue = feedback.options.expected_value
-				if (context && context.parseVariablesInString) {
-					d3OscPath = await context.parseVariablesInString(d3OscPath)
-					expectedValue = await context.parseVariablesInString(expectedValue)
-				}
-			} catch (err) {
-				this.log('debug', '[User OSC Feedback DEBUG] parseVariables error:', err)
-				return false
-			}
+		callback: (feedback) => {
+			const d3OscPath = feedback.options.d3_osc_path
+			const expectedValue = feedback.options.expected_value
 			const comparison = feedback.options.comparison
 			const valueType = feedback.options.value_type
 
