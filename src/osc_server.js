@@ -1,3 +1,4 @@
+const { once } = require('node:events')
 const osc = require('osc')
 const { InstanceStatus } = require('@companion-module/base')
 const utils = require('./utils')
@@ -8,7 +9,13 @@ const osc_server = {
 	received: {},
 
 	close: async function () {
-		await this.udpPort.close()
+		const port = this.udpPort
+		this.udpPort = undefined
+		if (!port?.socket) return
+
+		const closed = once(port.socket, 'close')
+		port.close()
+		await closed
 	},
 
 	connect: async function (self) {
@@ -44,10 +51,7 @@ const osc_server = {
 		this.udpPort.on('error', (err) => {
 			if (err.code === 'EADDRINUSE') {
 				self.log('error', 'Error: Selected port in use.' + err.message)
-				self.updateStatus(
-					InstanceStatus.ConnectionFailure,
-					`Port ${self.config.localrecieve_portport} in use elsewhere.`,
-				)
+				self.updateStatus(InstanceStatus.ConnectionFailure, `Port ${self.config.recieve_port} in use elsewhere.`)
 			} else {
 				self.log('error', 'Error: UDP port error: ' + err.message)
 				self.updateStatus(InstanceStatus.UnknownError, err.message)
