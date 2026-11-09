@@ -1,7 +1,7 @@
-const { once } = require('node:events')
-const osc = require('osc')
-const { InstanceStatus } = require('@companion-module/base')
-const utils = require('./utils')
+import { once } from 'node:events'
+import osc from 'osc'
+import { InstanceStatus } from '@companion-module/base'
+import utils from './utils.js'
 
 // A UDP bind doesn't reject a bad port. It picks a random one or wraps the number, then reports success.
 function parsePort(value) {
@@ -81,4 +81,4 @@ const osc_server = {
 	},
 }
 
-module.exports = osc_server
+export default osc_server

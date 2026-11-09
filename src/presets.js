@@ -1,14 +1,15 @@
-const utils = require('./utils')
-const icons = require('./icons')
+import utils from './utils.js'
+import icons from './icons.js'
 
-exports.initPresets = function () {
+export function initPresets() {
 	let presets = {}
 
 	presets['heartbeat'] = {
 		name: 'Heartbeat',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.heartbeat,
 			bgcolor: utils.MatteBlack,
@@ -16,13 +17,14 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'shift' }],
+				down: [{ actionId: 'shift', options: {} }],
 				up: [],
 			},
 		],
 		feedbacks: [
 			{
 				feedbackId: 'Heartbeat',
+				options: {},
 				style: {
 					bgcolor: utils.Gainsboro,
 				},
@@ -31,9 +33,10 @@ exports.initPresets = function () {
 	}
 	presets['play'] = {
 		name: 'Play',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.play,
 			bgcolor: utils.Gainsboro,
@@ -41,7 +44,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'play' }],
+				down: [{ actionId: 'play', options: {} }],
 				up: [],
 			},
 		],
@@ -59,9 +62,10 @@ exports.initPresets = function () {
 	}
 	presets['playsection'] = {
 		name: 'Play to end of section',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.playToEndofSection,
 			bgcolor: utils.Gainsboro,
@@ -69,7 +73,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'playsection' }],
+				down: [{ actionId: 'playsection', options: {} }],
 				up: [],
 			},
 		],
@@ -96,9 +100,10 @@ exports.initPresets = function () {
 	}
 	presets['loopSection'] = {
 		name: 'Loop section',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.loop,
 			bgcolor: utils.Gainsboro,
@@ -106,7 +111,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'loopsection' }],
+				down: [{ actionId: 'loopsection', options: {} }],
 				up: [],
 			},
 		],
@@ -124,9 +129,10 @@ exports.initPresets = function () {
 	}
 	presets['stop'] = {
 		name: 'Stop',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.stop,
 			bgcolor: utils.Gainsboro,
@@ -134,7 +140,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'stop' }],
+				down: [{ actionId: 'stop', options: {} }],
 				up: [],
 			},
 		],
@@ -152,9 +158,10 @@ exports.initPresets = function () {
 	}
 	presets['previoussection'] = {
 		name: 'Previous section',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.prevSection,
 			bgcolor: utils.Gainsboro,
@@ -162,7 +169,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'previoussection' }],
+				down: [{ actionId: 'previoussection', options: {} }],
 				up: [],
 			},
 		],
@@ -170,9 +177,10 @@ exports.initPresets = function () {
 	}
 	presets['nextsection'] = {
 		name: 'Next section',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.nextSection,
 			bgcolor: utils.Gainsboro,
@@ -180,7 +188,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'nextsection' }],
+				down: [{ actionId: 'nextsection', options: {} }],
 				up: [],
 			},
 		],
@@ -188,9 +196,10 @@ exports.initPresets = function () {
 	}
 	presets['returntostart'] = {
 		name: 'Return to start',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.backToStart,
 			bgcolor: utils.Gainsboro,
@@ -198,7 +207,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'returntostart' }],
+				down: [{ actionId: 'returntostart', options: {} }],
 				up: [],
 			},
 		],
@@ -206,9 +215,10 @@ exports.initPresets = function () {
 	}
 	presets['previoustrack'] = {
 		name: 'Previous track',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.prevTrack,
 			bgcolor: utils.Gainsboro,
@@ -216,7 +226,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'previoustrack' }],
+				down: [{ actionId: 'previoustrack', options: {} }],
 				up: [],
 			},
 		],
@@ -224,9 +234,10 @@ exports.initPresets = function () {
 	}
 	presets['nexttrack'] = {
 		name: 'Next track',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
+			text: '',
+			size: 'auto',
 			color: utils.Gainsboro,
 			png64: icons.nextTrack,
 			bgcolor: utils.Gainsboro,
@@ -234,7 +245,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'nexttrack' }],
+				down: [{ actionId: 'nexttrack', options: {} }],
 				up: [],
 			},
 		],
@@ -242,8 +253,7 @@ exports.initPresets = function () {
 	}
 	presets['fadedown'] = {
 		name: 'Fade down',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: 'fade\ndown',
@@ -254,7 +264,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'fadedown' }],
+				down: [{ actionId: 'fadedown', options: {} }],
 				up: [],
 			},
 		],
@@ -262,8 +272,7 @@ exports.initPresets = function () {
 	}
 	presets['fadeup'] = {
 		name: 'Fade up',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: 'fade\nup',
@@ -274,7 +283,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'fadeup' }],
+				down: [{ actionId: 'fadeup', options: {} }],
 				up: [],
 			},
 		],
@@ -282,8 +291,7 @@ exports.initPresets = function () {
 	}
 	presets['hold'] = {
 		name: 'Hold',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: 'hold',
@@ -294,7 +302,7 @@ exports.initPresets = function () {
 		},
 		steps: [
 			{
-				down: [{ actionId: 'hold' }],
+				down: [{ actionId: 'hold', options: {} }],
 				up: [],
 			},
 		],
@@ -302,8 +310,7 @@ exports.initPresets = function () {
 	}
 	presets['decrement_brightness'] = {
 		name: 'Reduce master brightness',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: '$(d3-osc:brightness)',
@@ -329,6 +336,7 @@ exports.initPresets = function () {
 		feedbacks: [
 			{
 				feedbackId: 'Brightness',
+				options: {},
 				style: {
 					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
@@ -338,8 +346,7 @@ exports.initPresets = function () {
 	}
 	presets['increment_brightness'] = {
 		name: 'Increase master brightness',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: '$(d3-osc:brightness)',
@@ -365,6 +372,7 @@ exports.initPresets = function () {
 		feedbacks: [
 			{
 				feedbackId: 'Brightness',
+				options: {},
 				style: {
 					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
@@ -374,8 +382,7 @@ exports.initPresets = function () {
 	}
 	presets['brightness'] = {
 		name: 'Shift aware brightness',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: '$(d3-osc:brightness)',
@@ -401,6 +408,7 @@ exports.initPresets = function () {
 		feedbacks: [
 			{
 				feedbackId: 'increase_brightness',
+				options: {},
 				style: {
 					color: utils.Gainsboro,
 					text: '$(d3-osc:brightness)',
@@ -412,6 +420,7 @@ exports.initPresets = function () {
 			},
 			{
 				feedbackId: 'decrease_brightness',
+				options: {},
 				style: {
 					color: utils.Gainsboro,
 					text: '$(d3-osc:brightness)',
@@ -423,6 +432,7 @@ exports.initPresets = function () {
 			},
 			{
 				feedbackId: 'Brightness',
+				options: {},
 				style: {
 					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
@@ -432,8 +442,7 @@ exports.initPresets = function () {
 	}
 	presets['decrement_volume'] = {
 		name: 'Reduce master volume',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: '$(d3-osc:volume)',
@@ -459,6 +468,7 @@ exports.initPresets = function () {
 		feedbacks: [
 			{
 				feedbackId: 'Volume',
+				options: {},
 				style: {
 					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
@@ -468,8 +478,7 @@ exports.initPresets = function () {
 	}
 	presets['increment_volume'] = {
 		name: 'Increase master volume',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: '$(d3-osc:volume)',
@@ -495,6 +504,7 @@ exports.initPresets = function () {
 		feedbacks: [
 			{
 				feedbackId: 'Volume',
+				options: {},
 				style: {
 					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
@@ -504,8 +514,7 @@ exports.initPresets = function () {
 	}
 	presets['volume'] = {
 		name: 'Shift aware volume',
-		category: 'Show control',
-		type: 'button',
+		type: 'simple',
 		style: {
 			color: utils.Gainsboro,
 			text: '$(d3-osc:volume)',
@@ -531,6 +540,7 @@ exports.initPresets = function () {
 		feedbacks: [
 			{
 				feedbackId: 'increase_volume',
+				options: {},
 				style: {
 					color: utils.Gainsboro,
 					text: '$(d3-osc:volume)',
@@ -542,6 +552,7 @@ exports.initPresets = function () {
 			},
 			{
 				feedbackId: 'decrease_volume',
+				options: {},
 				style: {
 					color: utils.Gainsboro,
 					text: '$(d3-osc:volume)',
@@ -553,6 +564,7 @@ exports.initPresets = function () {
 			},
 			{
 				feedbackId: 'Volume',
+				options: {},
 				style: {
 					color: utils.FireBrick,
 					bgcolor: utils.FireBrick,
@@ -560,5 +572,7 @@ exports.initPresets = function () {
 			},
 		],
 	}
-	this.setPresetDefinitions(presets)
+	const structure = [{ id: 'show_control', name: 'Show control', definitions: Object.keys(presets) }]
+
+	this.setPresetDefinitions(structure, presets)
 }

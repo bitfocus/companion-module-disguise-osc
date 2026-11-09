@@ -57,4 +57,4 @@ const choices = {
 		{ id: '2', label: 'Pause' },
 	],
 }
-module.exports = choices
+export default choices

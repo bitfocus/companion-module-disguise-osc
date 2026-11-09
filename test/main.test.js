@@ -1,46 +1,31 @@
-/* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=20.0.0" }] */
-const assert = require('node:assert/strict')
-const { readFileSync } = require('node:fs')
-const { createRequire } = require('node:module')
-const { resolve } = require('node:path')
-const { test } = require('node:test')
-const { runInNewContext } = require('node:vm')
-const base = require('@companion-module/base')
+/* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=22.0.0" }] */
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import ModuleClass from '../src/main.js'
+import server from '../src/osc_server.js'
 
 function loadModule(t) {
-	const server = { connect: t.mock.fn(), close: t.mock.fn(async () => {}) }
-	const sourcePath = resolve(__dirname, '../src/main.js')
-	const sourceRequire = createRequire(sourcePath)
+	t.mock.method(server, 'connect', () => {})
+	t.mock.method(server, 'close', async () => {})
 	const timers = new Set()
-	let ModuleClass
-	// Capture the entrypoint without starting Companion IPC or changing production exports.
-	runInNewContext(readFileSync(sourcePath, 'utf8'), {
-		require: (id) => {
-			if (id === '@companion-module/base') {
-				return {
-					...base,
-					InstanceBase: class {
-						updateStatus() {}
-					},
-					runEntrypoint: (constructor) => (ModuleClass = constructor),
-				}
-			}
-			return id === './osc_server' ? server : sourceRequire(id)
-		},
-		setInterval: (callback) => {
-			const timer = { callback }
-			timers.add(timer)
-			return timer
-		},
-		clearInterval: (timer) => timers.delete(timer),
+	t.mock.method(globalThis, 'setInterval', (callback) => {
+		const timer = { callback }
+		timers.add(timer)
+		return timer
 	})
+	t.mock.method(globalThis, 'clearInterval', (timer) => timers.delete(timer))
+	// Stands in for the context Companion passes when it creates the module.
+	const context = new Proxy(
+		{ id: 'test', label: 'test', _isInstanceContext: true },
+		{ get: (target, key) => (key in target ? target[key] : () => {}) },
+	)
 	return {
 		server,
 		timers,
 		createInstance: () => {
-			const instance = new ModuleClass()
+			const instance = new ModuleClass(context)
 			instance.log = t.mock.fn()
-			instance.checkFeedbacks = t.mock.fn()
+			instance.checkAllFeedbacks = t.mock.fn()
 			for (const method of ['initActions', 'initPresets', 'initFeedbacks', 'initVariables']) {
 				t.mock.method(instance, method, () => {})
 			}
@@ -85,7 +70,7 @@ test('Destroy clears the blink interval after it has ticked', async (t) => {
 	assert.equal(instance.blink_button, false)
 	timer.callback()
 	assert.equal(instance.blink_button, true)
-	assert.equal(instance.checkFeedbacks.mock.callCount(), 2)
+	assert.equal(instance.checkAllFeedbacks.mock.callCount(), 2)
 	await instance.destroy()
 	assert.equal(timers.size, 0, 'the blink interval remains active after destroy')
 })

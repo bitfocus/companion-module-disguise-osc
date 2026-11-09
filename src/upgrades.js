@@ -1,4 +1,4 @@
-module.exports = [
+export const UpgradeScripts = [
 	//eslint-disable-next-line no-unused-vars
 	function (context, props) {
 		// This placeholder was committed at one point, so it has to stay now.

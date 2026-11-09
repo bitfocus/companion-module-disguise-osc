@@ -1,11 +1,11 @@
 /* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=20.0.0" }] */
-const assert = require('node:assert/strict')
-const { createSocket } = require('node:dgram')
-const { EventEmitter, once } = require('node:events')
-const { test } = require('node:test')
-const { InstanceStatus } = require('@companion-module/base')
-const osc = require('osc')
-const oscServer = require('../src/osc_server')
+import assert from 'node:assert/strict'
+import { createSocket } from 'node:dgram'
+import { EventEmitter, once } from 'node:events'
+import { test } from 'node:test'
+import { InstanceStatus } from '@companion-module/base'
+import osc from 'osc'
+import oscServer from '../src/osc_server.js'
 
 async function connect(t) {
 	const port = new EventEmitter()

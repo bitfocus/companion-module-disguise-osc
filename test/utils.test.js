@@ -1,8 +1,8 @@
 /* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=20.0.0" }] */
-const assert = require('node:assert/strict')
-const { test } = require('node:test')
-const utils = require('../src/utils')
-const { initVariables } = require('../src/variables')
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import utils from '../src/utils.js'
+import { initVariables } from '../src/variables.js'
 
 function receive(address, type, value) {
 	const values = {}
@@ -110,8 +110,7 @@ test('Empty arguments and unknown addresses leave variables and play mode unchan
 test('All variables set by transport messages have a variable definition', () => {
 	let definitions
 	initVariables.call({ setVariableDefinitions: (value) => (definitions = value) })
-	const ids = definitions.map(({ variableId }) => variableId)
-	assert.equal(new Set(ids).size, ids.length)
+	const ids = Object.keys(definitions)
 	const variables = [
 		...Object.keys(receive('/d3/showcontrol/trackposition', 's', '00:00:00.00').values),
 		...Object.keys(receive('/d3/showcontrol/timecodeposition', 's', '00:00:00.00').values),

@@ -1,8 +1,8 @@
 /* eslint n/no-unsupported-features/node-builtins: ["error", { version: ">=20.0.0" }] */
-const assert = require('node:assert/strict')
-const { test } = require('node:test')
-const { initActions } = require('../src/actions')
-const utils = require('../src/utils')
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import { initActions } from '../src/actions.js'
+import utils from '../src/utils.js'
 
 function createActions(variables = {}, parseVariablesInString = async (text) => text) {
 	const messages = []
@@ -16,9 +16,20 @@ function createActions(variables = {}, parseVariablesInString = async (text) => 
 		sendOscMessage: (path, args) => messages.push({ path, args }),
 		log: (level, message) => logs.push({ level, message }),
 		getVariableValue: (id) => variables[id],
-		checkFeedbacks: (...ids) => feedbackChecks.push(ids),
-		parseVariablesInString,
+		checkAllFeedbacks: () => feedbackChecks.push([]),
 	})
+	// On API 2 Companion resolves variables before calling the callback, so the tests do the same.
+	for (const action of Object.values(definitions)) {
+		const callback = action.callback
+		action.callback = async (event, context = {}) => {
+			const resolve = context.parseVariablesInString ?? parseVariablesInString
+			const options = { ...event?.options }
+			for (const { id, useVariables } of action.options) {
+				if (useVariables && typeof options[id] === 'string') options[id] = await resolve(options[id])
+			}
+			return callback({ ...event, options })
+		}
+	}
 	return { actions: definitions, cue: definitions.cue, messages, logs, feedbackChecks }
 }
 
@@ -38,6 +49,42 @@ test('Every action field regex is a string Companion can compile', () => {
 	assert.ok(fields.length > 0)
 	for (const { regex } of fields) {
 		compileFieldRegex(regex)
+	}
+})
+
+test('Every action field with a regex lets the module report a bad value', () => {
+	const { actions } = createActions()
+	const fields = Object.values(actions).flatMap(({ options = [] }) =>
+		options.filter(({ regex }) => regex !== undefined),
+	)
+	for (const field of fields) assert.equal(field.allowInvalidValues, true, field.id)
+})
+
+test('Every dropdown stays a dropdown, so its ids never have to be typed', () => {
+	const { actions } = createActions()
+	const dropdowns = Object.values(actions).flatMap(({ options = [] }) =>
+		options.filter(({ type }) => type === 'dropdown'),
+	)
+	assert.ok(dropdowns.length > 0)
+	for (const field of dropdowns) assert.equal(field.disableAutoExpression, true, field.id)
+})
+
+test('Number fields log an error and send nothing for a partly valid value', async () => {
+	const { actions, messages, logs } = createActions({ brightness: '0.50', volume: '0.50' })
+	const tested = Object.entries(actions).filter(
+		([id, { options = [] }]) =>
+			id !== 'custom_osc' && options.some(({ id: field, regex }) => regex && ['int', 'float'].includes(field)),
+	)
+	assert.ok(tested.length > 0)
+	for (const [id, action] of tested) {
+		const options = Object.fromEntries(action.options.map(({ id: field, default: value }) => [field, value]))
+		for (const field of ['int', 'float']) if (field in options) options[field] = '12abc'
+		messages.length = 0
+		logs.length = 0
+		await action.callback({ options })
+		assert.deepEqual(messages, [], id)
+		assert.equal(logs.at(-1)?.level, 'error', id)
+		assert.ok(logs.at(-1).message.startsWith(`[${id}]`), id)
 	}
 })
 
@@ -312,11 +359,11 @@ test('Custom OSC sends no arguments and ignores any leftover value', async () =>
 
 test('Custom OSC hides the value field only when sending no arguments', () => {
 	const { actions } = createActions()
-	const { isVisible } = actions.custom_osc.options.find(({ id }) => id === 'arg_value')
-	assert.equal(isVisible({ arg_type: 'none' }), false)
-	for (const argType of ['string', 'int', 'float', 'int_parts']) {
-		assert.equal(isVisible({ arg_type: argType }), true)
-	}
+	const field = actions.custom_osc.options.find(({ id }) => id === 'arg_value')
+	assert.equal(field.isVisibleExpression, "$(options:arg_type) != 'none'")
+	// Companion can only read options that can't themselves be expressions.
+	const argType = actions.custom_osc.options.find(({ id }) => id === 'arg_type')
+	assert.equal(argType.disableAutoExpression, true)
 })
 
 test('Custom OSC path field accepts a path or a variable', () => {

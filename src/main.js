@@ -1,13 +1,15 @@
-const { InstanceBase, Regex, runEntrypoint } = require('@companion-module/base')
-const UpgradeScripts = require('./upgrades')
+import { InstanceBase, Regex, createModuleLogger } from '@companion-module/base'
+import { UpgradeScripts } from './upgrades.js'
 
-const osc_server = require('./osc_server')
-const actions = require('./actions')
-const presets = require('./presets')
-const feedbacks = require('./feedbacks')
-const variables = require('./variables')
+import osc_server from './osc_server.js'
+import * as actions from './actions.js'
+import * as presets from './presets.js'
+import * as feedbacks from './feedbacks.js'
+import * as variables from './variables.js'
 
-class disguiseOSCInstance extends InstanceBase {
+export { UpgradeScripts }
+
+export default class disguiseOSCInstance extends InstanceBase {
 	constructor(internal) {
 		super(internal)
 
@@ -37,7 +39,7 @@ class disguiseOSCInstance extends InstanceBase {
 		this.blinkInterval = setInterval(() => {
 			this.blink_button = !this.blink_button
 
-			this.checkFeedbacks()
+			this.checkAllFeedbacks()
 		}, 500)
 	}
 	// When module gets deleted
@@ -72,7 +74,7 @@ class disguiseOSCInstance extends InstanceBase {
 				type: 'textinput',
 				label: 'Send Port',
 				width: 3,
-				default: 7401,
+				default: '7401',
 				regex: Regex.PORT,
 			},
 			{
@@ -80,16 +82,19 @@ class disguiseOSCInstance extends InstanceBase {
 				type: 'textinput',
 				label: 'Receive Port',
 				width: 3,
-				default: 7400,
+				default: '7400',
 				regex: Regex.PORT,
 			},
 		]
 	}
+	// Companion's debug log shows base 2.x lines with no source unless the logger is named
+	log(level, message) {
+		createModuleLogger(this.label)[level](message)
+	}
+
 	sendOscMessage(path, args) {
 		this.log('debug', `Sending OSC ${this.config.host}:${this.config.send_port} ${path}`)
 		this.log('debug', `Sending Args ${JSON.stringify(args)}`)
-		this.oscSend(this.config.host, this.config.send_port, path, args)
+		this.oscSend(this.config.host, Number(this.config.send_port), path, args)
 	}
 }
-
-runEntrypoint(disguiseOSCInstance, UpgradeScripts)
