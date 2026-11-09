@@ -32,7 +32,6 @@ class disguiseOSCInstance extends InstanceBase {
 		self.initVariables()
 
 		osc_server.connect(this)
-		this.updateStatus('ok')
 
 		this.blink_button = true
 		this.blinkInterval = setInterval(() => {

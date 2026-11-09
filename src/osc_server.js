@@ -3,6 +3,14 @@ const osc = require('osc')
 const { InstanceStatus } = require('@companion-module/base')
 const utils = require('./utils')
 
+// A UDP bind doesn't reject a bad port. It picks a random one or wraps the number, then reports success.
+function parsePort(value) {
+	const text = String(value ?? '').trim()
+	if (!/^\d+$/.test(text)) return null
+	const port = Number(text)
+	return port >= 1 && port <= 65535 ? port : null
+}
+
 const osc_server = {
 	lastHeartbeat: null,
 	// Buffer to store latest args for each OSC address
@@ -21,9 +29,17 @@ const osc_server = {
 	connect: async function (self) {
 		// Expose buffer on self for access in feedbacks and actions
 		if (!self.oscReceived) self.oscReceived = {}
+
+		const localPort = parsePort(self.config.recieve_port)
+		if (localPort === null) {
+			self.log('error', `[receiver] Receive port "${self.config.recieve_port}" is not a whole number from 1 to 65535.`)
+			self.updateStatus(InstanceStatus.BadConfig, 'Receive port must be a whole number from 1 to 65535.')
+			return
+		}
+
 		this.udpPort = new osc.UDPPort({
 			localAddress: '0.0.0.0',
-			localPort: self.config.recieve_port,
+			localPort,
 			metadata: true,
 		})
 

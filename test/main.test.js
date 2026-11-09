@@ -97,6 +97,14 @@ test('Init opens the receiver once', async (t) => {
 	assert.equal(server.close.mock.callCount(), 0)
 })
 
+test('Init leaves the connection status to the receiver', async (t) => {
+	const { createInstance } = loadModule(t)
+	const instance = createInstance()
+	instance.updateStatus = t.mock.fn()
+	await instance.init({ recieve_port: 7400 })
+	assert.equal(instance.updateStatus.mock.callCount(), 0)
+})
+
 test('Config update waits for receiver closure before reconnecting', async (t) => {
 	const { createInstance, server } = loadModule(t)
 	let finishClose

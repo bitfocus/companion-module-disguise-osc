@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file. Dates are d
 
 - Action fields now show a warning in the editor when a value is invalid.
 - Send custom OSC message no longer shortens bad numbers, such as `1.2.5` sent as `1.2` or `12abc` sent as `12`. It logs an error and sends nothing.
+- A bad Receive Port now shows Bad configuration. It used to listen on the wrong port and report Connected.
+- The port-in-use message now names the port instead of showing `undefined`.
 
 #### 2.2.0 (2026-10-23)
 
